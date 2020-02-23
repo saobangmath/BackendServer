@@ -27,5 +27,7 @@ urlpatterns = [
     url('checkprogress/', views.checkprogress, name='checkprogress'),
     url(r'^admin/', admin.site.urls),
     path('questions/', include('questions.urls')),
-    path('', include('home.urls')),
+
 ]
+
+# path('', include('home.urls')),
