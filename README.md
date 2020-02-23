@@ -1,7 +1,7 @@
 # BackendServer
 
 (Weiming 23 feb)
-Already somewhat done a edit questions page but I just used a bunch of components from bootstrap. Did around the same time as Ivan so didn't use his theme yet. Can see and access the page through (baseurl)/questions. 
+Already somewhat done a edit questions page with the logic for editing the firebase db done, but I just used a bunch of components from bootstrap. Did around the same time as Ivan so didn't use his theme yet. Can see and access the page through (baseurl)/questions. 
 
 Will change to Ivan's html next time
 
