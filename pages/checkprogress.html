@@ -24,11 +24,11 @@
 			<link rel="stylesheet" href="{% static 'css/linearicons.css' %}">
 			<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
 			<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-			<link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">			
+			<link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+			<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">				
 			<link rel="stylesheet" href="{% static 'css/nice-select.css' %}">							
 			<link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
-			<link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">			
-			<link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">			
+			<link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">					
 			<link rel="stylesheet" href="{% static 'css/main.css' %}">
 		</head>
 		<body>	
@@ -55,44 +55,49 @@
 		    	</div>
 		    </div>
 		  </header><!-- #header -->
+			  
+			<!-- start banner Area -->
+			<section class="about-banner">
+				<div class="container">				
+					<div class="row d-flex align-items-center justify-content-center">
+						<div class="about-content col-lg-12">
+							<h1 class="text-white">
+								Check Progress
+							</h1>
+							</div>
+					</div>
+				</div>
+			</section>
+			<!-- End banner Area -->	
 
-
-		<section class="home-about-area section-gap">
+			<!-- Start home-about Area -->
+			<section class="home-about-area section-gap">
 				<div class="container">
 					<div class="row align-items-center justify-content-between">
-						<div class="col-lg-5 col-md-6 home-about-left">
-							<img class="img-fluid" src="{% static 'img/marvellous_kittens_desktop.jpg' %}" alt="">
+						<div class="col-lg-6 col-md-6 home-about-left">
+							<img class="img-fluid" src="{% static 'img/about-img.png' %}" alt="">
 						</div>
 						<div class="col-lg-5 col-md-6 home-about-right">
-							<div align="center"><h2>Login</h2></div>
-							<br>
-							<br>
-							<form action="login" method="post">
-								{% csrf_token %}
-								<table align="center">
-									<tr>
-										<td align="right">Username </td>
-										<td align="left"><input type="text" name="username" ></td>
-									</tr>
-									<tr>
-										<td align="right">Password </td>
-										<td align="left"><input type="password" name="password" ></td>
-									</tr>
-								</table>
-								<br>
-								{% for message in messages %}
-								<p>{{ message }}</p>
-								{% endfor %}
-								<input type="Submit">
-							</form>
-						</div>
 
+							<h1 class="text-uppercase">Progress Report</h1>
+							<p>
+								Put stuff that requires login on this page / similar pages
+							</p>
+							<a href="#" class="primary-btn text-uppercase">View Full Details</a>
+						</div>
+						<div class="col-lg-12 pt-60">
+							<p>
+								bla bla bla
+							</p>
+							<p>
+								Display progress of class here
+							</p>
+
+						</div>
 						</div>
 					</div>
 				</section>
 
-
-            <!-- start footer Area -->
             			            <!-- start footer Area -->
             <footer class="footer-area section-gap">
                 <div class="container">
@@ -144,6 +149,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			<script src="js/simple-skillbar.js"></script>							
 			<script src="js/owl.carousel.min.js"></script>							
 			<script src="js/mail-script.js"></script>	
-			<script src="js/main.js"></script>	
+			<script src="js/main.js"></script>
+
+
 		</body>
 	</html>
