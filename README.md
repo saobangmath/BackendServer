@@ -3,7 +3,7 @@
 (Weiming 23 feb)
 Already somewhat done a edit questions page but I just used a bunch of components from bootstrap. Did around the same time as Ivan so didn't use his theme yet. Can see and access the page through (baseurl)/questions. 
 
-Will change back to Ivan's html next time
+Will change to Ivan's html next time
 
 (Ivan 23 feb)
 Currently using html template from web. Template stored in folder 'pages'. To use, add 'pages' to STATICFILES_DIRS in settings.py
