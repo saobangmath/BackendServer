@@ -7,7 +7,7 @@
 		<!-- Favicon-->
 		<link rel="shortcut icon" href="{% static 'img/cat_face.png' %}">
 		<!-- Author Meta -->
-		<meta name="author" content="colorlib">
+		<meta name="author" content="UnityForce">
 		<!-- Meta Description -->
 		<meta name="description" content="">
 		<!-- Meta Keyword -->
@@ -36,7 +36,7 @@
 		    <div class="container main-menu">
 		    	<div class="row align-items-center justify-content-between d-flex">
 			      <div id="logo">
-			        <a href=""><img src="{% static 'img/MK.png' %}" alt="" title="" width="400"/></a>
+			        <a href="{% url 'home' %}"><img src="{% static 'img/MK.png' %}" alt="" title="" width="400"/></a>
 			      </div>
 			      <nav id="nav-menu-container">
 			        <ul class="nav-menu">
@@ -45,6 +45,7 @@
 							<li><a href="{% url 'checkprogress' %}">Check Progress</a></li>
 							<li><a href="{% url 'questions' %}">Questions</a></li>
 							<li><a href="{% url 'logout' %}">Logout</a></li>
+							<li style="color:white">Ivan was here</li>
 							<li>Hello, {{user.username}}</li>
 					  {% else %}
 					  <li><a href="{% url 'register' %}">Register</a></li>
