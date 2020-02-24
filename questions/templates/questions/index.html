@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div class = "container " style = "padding: 50px;">
+<br>
+<section class="home-about-area section-gap">
+<div class = "container">
+  <h2>Questions</h2> <br>
+  <p>Click on each individual question to view the statistics or to edit them.</p>
   <table class="table">
-    <thead class="thead-light">
+    <thead class="thead-light" style = "border-radius: 10px;">
       <tr> 
         <th scope="col">Question</th>
         <th scope="col">Difficulty</th>
@@ -20,6 +24,8 @@
   </table>
 
 </div>
+</section>
+
 
 <!-- Modal -->
 <div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -211,6 +217,9 @@
   .dataRow:hover {
     background-color:#dddddd;
   }
+  .table {
+    border-radius: 20px;
+  }
 </style>
 {% endblock %}
 <!doctype html>
@@ -226,26 +235,10 @@
     <title>Questions</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">Marvellous Kittens Admin</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="#">Home</a>
-          </li>
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Questions <span class="sr-only">(current)</span></a>
-          </li>
-        </ul>
-      </div>
-    </nav>
 
-    <div class = "container " style = "padding: 50px;">
-      <table class="table">
-        <thead class="thead-light">
+    <div class = "container" style = "padding: 50px;">
+      <table class="table table-hover">
+        <thead>
           <tr> 
             <th scope="col">Question</th>
             <th scope="col">Difficulty</th>
