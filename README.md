@@ -24,4 +24,4 @@ using single quotes to avoid escaping. (Yes I know this is a massive burden but 
 
 
 For every page added, add to urls.py, and create function in views.py. Add ```@login_required```  before function in views.py for pages that require login (probably all from here on)
-For each page that is not index (home), make sure all links start with ```../``` and home is referenced as (empty string) instead of ```index```.
+
