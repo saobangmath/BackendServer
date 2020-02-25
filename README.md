@@ -25,3 +25,8 @@ using single quotes to avoid escaping. (Yes I know this is a massive burden but 
 
 For every page added, add to urls.py, and create function in views.py. Add ```@login_required```  before function in views.py for pages that require login (probably all from here on)
 
+(Anh Tai 27 feb)
+adding levels and attempts part for server skeleton.
+Need:
+- Fixed up enable clicking on the attempt item to be able to editted.
+- Displaying levels in the /levels url
