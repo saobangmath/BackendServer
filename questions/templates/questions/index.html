@@ -5,7 +5,7 @@
 <section class="home-about-area section-gap">
 <div class = "container">
   <h2>Questions</h2> <br>
-  <p>Click on each individual question to view the statistics or to edit them.</p>
+  <p>Click on each individual question to view the statistics or to edit them. &nbsp &nbsp &nbsp &nbsp<button onClick="addQuestion()" data-target="#addQuestionModal" data-toggle="modal">Add Question</button></p>
   <table class="table">
     <thead class="thead-light" style = "border-radius: 10px;">
       <tr> 
@@ -53,8 +53,10 @@
     Difficulty: <input id = "difficultyEdit" class="form-control" type="text" placeholder="Default input">
   </div>
   <h6 id = "changesText" style = "display:none; text-align: center; color: green;">Changes saved!</h6>
+  <h6 id = "removeQuestionText" style = "display:none; text-align: center; color: green;">Question removed!</h6>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button id = "deleteButton" value = "" type="button" class="btn btn-secondary" onclick="deleteQuestion(this.value)">Delete</button>
     <button id = "saveButton" value = "" type="button" class="btn btn-primary" onclick = "saveQuestion(this.value)">Save changes</button>
     <!--saveQuestion(this.value)-->
   </div>
@@ -149,34 +151,45 @@
   });
 
   function setQuestionModal(id) {
+
     document.getElementById("changesText").style.display = "none";
     var content = document.getElementById("questionStats");
+
     database.ref('Questions/' + id).once('value', function(snapshot) {
       console.log(snapshot.val());
       var answers = [snapshot.val().A, snapshot.val().B, snapshot.val().C, snapshot.val().D];
       var totalAns = 0;
+
       for (var i = 0; i < answers.length; i++) {
-        totalAns += answers[i];
+        if (Number.isInteger(answers[i]))
+         {totalAns += answers[i];}
       }
-      var correctAns = (answers[snapshot.val().correct - 1] / totalAns) * 100;
-      var a_percent = (snapshot.val().A / totalAns) * 100;
-      var b_percent = (snapshot.val().B / totalAns) * 100;
-      var c_percent = (snapshot.val().C / totalAns) * 100;
-      var d_percent = (snapshot.val().D / totalAns) * 100;
-      console.log(answers );
+
+
 
       var statsString = "";
       if (totalAns != 0) {
+
+
+        var correctAns = (answers[snapshot.val().correct - 1] / totalAns) * 100;
+        var a_percent = (snapshot.val().A / totalAns) * 100;
+        var b_percent = (snapshot.val().B / totalAns) * 100;
+        var c_percent = (snapshot.val().C / totalAns) * 100;
+        var d_percent = (snapshot.val().D / totalAns) * 100;
+        console.log(answers );
+
+
         statsString = correctAns.toString() + "% (" + answers[snapshot.val().correct - 1].toString() + "/" + totalAns.toString() + ") of the students have gotten this question correct<br>";
         statsString += a_percent.toString() + "% (" + snapshot.val().A.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().opA + "'<br>";
         statsString += b_percent.toString() + "% (" + snapshot.val().B.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().opB + "'<br>";
         statsString += c_percent.toString() + "% (" + snapshot.val().C.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().opC + "'<br>";
         statsString += d_percent.toString() + "% (" + snapshot.val().D.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().opD + "'<br>";
       } else {
+
         statsString = "No students have answered this question yet";
       }
       content.innerHTML = statsString;
-      
+
       var qnEdit = document.getElementById("qnEdit");
       var opAEdit = document.getElementById("opAEdit");
       var opBEdit = document.getElementById("opBEdit");
@@ -192,12 +205,29 @@
       correctEdit.setAttribute("value", snapshot.val().correct);
       difficultyEdit.setAttribute("value", snapshot.val().difficulty);
       document.getElementById("saveButton").setAttribute("value", id);
+      document.getElementById("deleteButton").setAttribute("value", id);
+
+      
     })
   };
 
   function debug(id) {
     window.alert(id);
    };
+
+  function deleteQuestion(id){
+    database.ref("Questions/").child(id).remove();
+    document.getElementById("removeQuestionText").style.display = "block";
+    document.getElementById("qnEdit").value = "";
+    document.getElementById("opAEdit").value = "";
+    document.getElementById("opBEdit").value = "";
+    document.getElementById("opCEdit").value = "";
+    document.getElementById("opDEdit").value = "";
+    document.getElementById("difficultyEdit").value = "";
+    document.getElementById("correctEdit").value = "";
+};
+
+
 
   function saveQuestion(id) {
     console.log(id);
@@ -242,7 +272,13 @@
       });
 
       document.getElementById("changesTextAdd").style.display = "block";
-
+      document.getElementById("qnAdd").value = "";
+      document.getElementById("opAAdd").value = "";
+      document.getElementById("opBAdd").value = "";
+      document.getElementById("opCAdd").value = "";
+      document.getElementById("opDAdd").value = "";
+      document.getElementById("difficultyAdd").value = "";
+      document.getElementById("correctAdd").value = "";
     };
 
     function newQuestionID(){
