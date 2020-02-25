@@ -1,0 +1,454 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<br>
+<section class="home-about-area section-gap">
+<div class = "container">
+  <h2>Levels</h2> <br>
+  <p>Click on each individual question to view the statistics or to edit them.</p>
+  <table class="table">
+    <thead class="thead-light" style = "border-radius: 10px;">
+      <tr>
+        <th scope="col">Question</th>
+        <th scope="col">Difficulty</th>
+        <th scope="col">Option 1</th>
+        <th scope="col">Option 2</th>
+        <th scope="col">Option 3</th>
+        <th scope="col">Option 4</th>
+        <th scope="col">Correct Option</th>
+      </tr>
+    </thead>
+    <tbody id = "levels_content">
+
+    </tbody>
+  </table>
+
+</div>
+</section>
+
+
+<!-- Modal -->
+<div class="modal fade" id="levelModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLongTitle">Question Details</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <h6>Question Statistics</h6>
+    <p id ="levelStats"></p>
+    <h6>Edit Question</h6>
+    Question: <input id = "qnEdit" class="form-control" type="text" placeholder="Default input">
+    Option A: <input id = "opAEdit" class="form-control" type="text" placeholder="Default input">
+    Option B: <input id = "opBEdit" class="form-control" type="text" placeholder="Default input">
+    Option C: <input id = "opCEdit" class="form-control" type="text" placeholder="Default input">
+    Option D: <input id = "opDEdit" class="form-control" type="text" placeholder="Default input">
+    Correct Ans: <input id = "correctEdit" class="form-control" type="text" placeholder="Default input">
+    Difficulty: <input id = "difficultyEdit" class="form-control" type="text" placeholder="Default input">
+  </div>
+  <h6 id = "changesText" style = "display:none; text-align: center; color: green;">Changes saved!</h6>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button id = "saveButton" value = "" type="button" class="btn btn-primary" onclick = "saveQuestion(this.value)">Save changes</button>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLongTitle">Add Question</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <h6>Edit Question</h6>
+    Question: <input id = "qnAdd" class="form-control" type="text" placeholder="Default input">
+    Option A: <input id = "opAAdd" class="form-control" type="text" placeholder="Default input">
+    Option B: <input id = "opBAdd" class="form-control" type="text" placeholder="Default input">
+    Option C: <input id = "opCAdd" class="form-control" type="text" placeholder="Default input">
+    Option D: <input id = "opDAdd" class="form-control" type="text" placeholder="Default input">
+    Correct Ans: <input id = "correctAdd" class="form-control" type="text" placeholder="Default input">
+    Difficulty: <input id = "difficultyAdd" class="form-control" type="text" placeholder="Default input">
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button id = "saveButton" value = "" type="button" class="btn btn-primary" onclick = "saveQuestion(this.value)">Save changes</button>
+  </div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCbrmnFV_4UBbmFyJIhqIM_J5QDbpGkgRo",
+    authDomain: "marvellous-kittens.firebaseapp.com",
+    databaseURL: "https://marvellous-kittens.firebaseio.com",
+    projectId: "marvellous-kittens",
+    storageBucket: "marvellous-kittens.appspot.com",
+    messagingSenderId: "942471948637",
+    appId: "1:942471948637:web:29eec0236cd1e64d18e0b4"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+
+  var tbody = document.getElementById("questions_content");
+
+  // Initialise table
+  database.ref('Questions').on('value', function(snapshot) {
+    tbody.innerHTML = "";
+    snapshot.forEach(function(qn) {
+      var tr = document.createElement("tr");
+      tr.setAttribute("class", "dataRow");
+      tr.setAttribute("id", qn.key);
+      tr.setAttribute("data-toggle", "modal");
+      tr.setAttribute("data-target", "#questionModal");
+      tr.setAttribute("onClick", "setQuestionModal(this.id)")
+      var td1 = document.createElement("td");
+      td1.innerHTML = qn.val().qn;
+      var td2 = document.createElement("td");
+      td2.innerHTML = qn.val().difficulty;
+      var td3 = document.createElement("td");
+      td3.innerHTML = qn.val().opA;
+      var td4 = document.createElement("td");
+      td4.innerHTML = qn.val().opB;
+      var td5 = document.createElement("td");
+      td5.innerHTML = qn.val().opC;
+      var td6 = document.createElement("td");
+      td6.innerHTML = qn.val().opD;
+      var td7 = document.createElement("td");
+      td7.innerHTML = qn.val().correct;
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tr.appendChild(td3);
+      tr.appendChild(td4);
+      tr.appendChild(td5);
+      tr.appendChild(td6);
+      tr.appendChild(td7);
+      tbody.appendChild(tr);
+    })
+  });
+
+  function setQuestionModal(id) {
+    document.getElementById("changesText").style.display = "none";
+    var content = document.getElementById("questionStats");
+    database.ref('Questions/' + id).once('value', function(snapshot) {
+      console.log(snapshot.val());
+      var answers = [snapshot.val().A, snapshot.val().B, snapshot.val().C, snapshot.val().D];
+      var totalAns = 0;
+      for (var i = 0; i < answers.length; i++) {
+        totalAns += answers[i];
+      }
+      var correctAns = (answers[snapshot.val().correct - 1] / totalAns) * 100;
+      var a_percent = (snapshot.val().A / totalAns) * 100;
+      var b_percent = (snapshot.val().B / totalAns) * 100;
+      var c_percent = (snapshot.val().C / totalAns) * 100;
+      var d_percent = (snapshot.val().D / totalAns) * 100;
+      console.log(answers );
+
+      var statsString = "";
+      if (totalAns != 0) {
+        statsString = correctAns.toString() + "% (" + answers[snapshot.val().correct - 1].toString() + "/" + totalAns.toString() + ") of the students have gotten this question correct<br>";
+        statsString += a_percent.toString() + "% (" + snapshot.val().A.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().opA + "'<br>";
+        statsString += b_percent.toString() + "% (" + snapshot.val().B.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().opB + "'<br>";
+        statsString += c_percent.toString() + "% (" + snapshot.val().C.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().opC + "'<br>";
+        statsString += d_percent.toString() + "% (" + snapshot.val().D.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().opD + "'<br>";
+      } else {
+        statsString = "No students have answered this question yet";
+      }
+      content.innerHTML = statsString;
+
+      var qnEdit = document.getElementById("qnEdit");
+      var opAEdit = document.getElementById("opAEdit");
+      var opBEdit = document.getElementById("opBEdit");
+      var opCEdit = document.getElementById("opCEdit");
+      var opDEdit = document.getElementById("opDEdit");
+      var correctEdit = document.getElementById("correctEdit");
+      var difficultyEdit = document.getElementById("difficultyEdit");
+      qnEdit.setAttribute("value", snapshot.val().qn);
+      opAEdit.setAttribute("value", snapshot.val().opA);
+      opBEdit.setAttribute("value", snapshot.val().opB);
+      opCEdit.setAttribute("value", snapshot.val().opC);
+      opDEdit.setAttribute("value", snapshot.val().opD);
+      correctEdit.setAttribute("value", snapshot.val().correct);
+      difficultyEdit.setAttribute("value", snapshot.val().difficulty);
+      document.getElementById("saveButton").setAttribute("value", id);
+    })
+  };
+
+  function saveQuestion(id) {
+    console.log(id);
+    var qnEdit = document.getElementById("qnEdit").value;
+    var opAEdit = document.getElementById("opAEdit").value;
+    var opBEdit = document.getElementById("opBEdit").value;
+    var opCEdit = document.getElementById("opCEdit").value;
+    var opDEdit = document.getElementById("opDEdit").value;
+    var difficultyEdit = document.getElementById("difficultyEdit").value;
+    var correctEdit = document.getElementById("correctEdit").value;
+    database.ref("Questions/").child(id).update({
+        qn: qnEdit,
+        opA: opAEdit,
+        opB: opBEdit,
+        opC: opCEdit,
+        opD: opDEdit,
+        correct: correctEdit,
+        difficulty: difficultyEdit,
+      })
+      document.getElementById("changesText").style.display = "block";
+
+    }
+
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+  .dataRow:hover {
+    background-color:#dddddd;
+  }
+  .table {
+    border-radius: 20px;
+  }
+</style>
+{% endblock %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Questions</title>
+  </head>
+  <body>
+
+    <div class = "container" style = "padding: 50px;">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Question</th>
+            <th scope="col">Difficulty</th>
+            <th scope="col">Option 1</th>
+            <th scope="col">Option 2</th>
+            <th scope="col">Option 3</th>
+            <th scope="col">Option 4</th>
+            <th scope="col">Correct Option</th>
+          </tr>
+        </thead>
+        <tbody id = "questions_content">
+
+        </tbody>
+      </table>
+      <div class = "col text-center">
+        <button class = "btn btn-primary" style = "margin: auto;">Add Question</button>
+      </div>
+    </div>
+
+<!-- Modal -->
+<div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Question Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>Question Statistics</h6>
+        <p id ="questionStats"></p>
+        <h6>Edit Question</h6>
+        Question: <input id = "qnEdit" class="form-control" type="text" placeholder="Default input">
+        Option A: <input id = "opAEdit" class="form-control" type="text" placeholder="Default input">
+        Option B: <input id = "opBEdit" class="form-control" type="text" placeholder="Default input">
+        Option C: <input id = "opCEdit" class="form-control" type="text" placeholder="Default input">
+        Option D: <input id = "opDEdit" class="form-control" type="text" placeholder="Default input">
+        Correct Ans: <input id = "correctEdit" class="form-control" type="text" placeholder="Default input">
+        Difficulty: <input id = "difficultyEdit" class="form-control" type="text" placeholder="Default input">
+      </div>
+      <h6 id = "changesText" style = "display:none; text-align: center; color: green;">Changes saved!</h6>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id = "saveButton" value = "" type="button" class="btn btn-primary" onclick = "saveQuestion(this.value)">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Add Question</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>Edit Question</h6>
+        Question: <input id = "qnAdd" class="form-control" type="text" placeholder="Default input">
+        Option A: <input id = "opAAdd" class="form-control" type="text" placeholder="Default input">
+        Option B: <input id = "opBAdd" class="form-control" type="text" placeholder="Default input">
+        Option C: <input id = "opCAdd" class="form-control" type="text" placeholder="Default input">
+        Option D: <input id = "opDAdd" class="form-control" type="text" placeholder="Default input">
+        Correct Ans: <input id = "correctAdd" class="form-control" type="text" placeholder="Default input">
+        Difficulty: <input id = "difficultyAdd" class="form-control" type="text" placeholder="Default input">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id = "saveButton" value = "" type="button" class="btn btn-primary" onclick = "saveQuestion(this.value)">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-database.js"></script>
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyCbrmnFV_4UBbmFyJIhqIM_J5QDbpGkgRo",
+        authDomain: "marvellous-kittens.firebaseapp.com",
+        databaseURL: "https://marvellous-kittens.firebaseio.com",
+        projectId: "marvellous-kittens",
+        storageBucket: "marvellous-kittens.appspot.com",
+        messagingSenderId: "942471948637",
+        appId: "1:942471948637:web:29eec0236cd1e64d18e0b4"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      var database = firebase.database();
+
+      var tbody = document.getElementById("questions_content");
+
+      // Initialise table
+      database.ref('Questions').on('value', function(snapshot) {
+        tbody.innerHTML = "";
+        snapshot.forEach(function(qn) {
+          var tr = document.createElement("tr");
+          tr.setAttribute("class", "dataRow");
+          tr.setAttribute("id", qn.key);
+          tr.setAttribute("data-toggle", "modal");
+          tr.setAttribute("data-target", "#questionModal");
+          tr.setAttribute("onClick", "setQuestionModal(this.id)")
+          var td1 = document.createElement("td");
+          td1.innerHTML = qn.val().qn;
+          var td2 = document.createElement("td");
+          td2.innerHTML = qn.val().difficulty;
+          var td3 = document.createElement("td");
+          td3.innerHTML = qn.val().opA;
+          var td4 = document.createElement("td");
+          td4.innerHTML = qn.val().opB;
+          var td5 = document.createElement("td");
+          td5.innerHTML = qn.val().opC;
+          var td6 = document.createElement("td");
+          td6.innerHTML = qn.val().opD;
+          var td7 = document.createElement("td");
+          td7.innerHTML = qn.val().correct;
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          tr.appendChild(td3);
+          tr.appendChild(td4);
+          tr.appendChild(td5);
+          tr.appendChild(td6);
+          tr.appendChild(td7);
+          tbody.appendChild(tr);
+        })
+      });
+
+      function setQuestionModal(id) {
+        document.getElementById("changesText").style.display = "none";
+        var content = document.getElementById("questionStats");
+        database.ref('Questions/' + id).once('value', function(snapshot) {
+          console.log(snapshot.val());
+          var answers = [snapshot.val().A, snapshot.val().B, snapshot.val().C, snapshot.val().D];
+          var totalAns = 0;
+          for (var i = 0; i < answers.length; i++) {
+            totalAns += answers[i];
+          }
+          var correctAns = (answers[snapshot.val().correct - 1] / totalAns) * 100;
+          var a_percent = (snapshot.val().A / totalAns) * 100;
+          var b_percent = (snapshot.val().B / totalAns) * 100;
+          var c_percent = (snapshot.val().C / totalAns) * 100;
+          var d_percent = (snapshot.val().D / totalAns) * 100;
+          console.log(answers );
+
+          var statsString = "";
+          if (totalAns != 0) {
+            statsString = correctAns.toString() + "% (" + answers[snapshot.val().correct - 1].toString() + "/" + totalAns.toString() + ") of the students have gotten this question correct<br>";
+            statsString += a_percent.toString() + "% (" + snapshot.val().A.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().opA + "'<br>";
+            statsString += b_percent.toString() + "% (" + snapshot.val().B.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().opB + "'<br>";
+            statsString += c_percent.toString() + "% (" + snapshot.val().C.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().opC + "'<br>";
+            statsString += d_percent.toString() + "% (" + snapshot.val().D.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().opD + "'<br>";
+          } else {
+            statsString = "No students have answered this question yet";
+          }
+          content.innerHTML = statsString;
+
+          var qnEdit = document.getElementById("qnEdit");
+          var opAEdit = document.getElementById("opAEdit");
+          var opBEdit = document.getElementById("opBEdit");
+          var opCEdit = document.getElementById("opCEdit");
+          var opDEdit = document.getElementById("opDEdit");
+          var correctEdit = document.getElementById("correctEdit");
+          var difficultyEdit = document.getElementById("difficultyEdit");
+          qnEdit.setAttribute("value", snapshot.val().qn);
+          opAEdit.setAttribute("value", snapshot.val().opA);
+          opBEdit.setAttribute("value", snapshot.val().opB);
+          opCEdit.setAttribute("value", snapshot.val().opC);
+          opDEdit.setAttribute("value", snapshot.val().opD);
+          correctEdit.setAttribute("value", snapshot.val().correct);
+          difficultyEdit.setAttribute("value", snapshot.val().difficulty);
+          document.getElementById("saveButton").setAttribute("value", id);
+        })
+      };
+
+      function saveQuestion(id) {
+        console.log(id);
+        var qnEdit = document.getElementById("qnEdit").value;
+        var opAEdit = document.getElementById("opAEdit").value;
+        var opBEdit = document.getElementById("opBEdit").value;
+        var opCEdit = document.getElementById("opCEdit").value;
+        var opDEdit = document.getElementById("opDEdit").value;
+        var difficultyEdit = document.getElementById("difficultyEdit").value;
+        var correctEdit = document.getElementById("correctEdit").value;
+        database.ref("Questions/").child(id).update({
+            qn: qnEdit,
+            opA: opAEdit,
+            opB: opBEdit,
+            opC: opCEdit,
+            opD: opDEdit,
+            correct: correctEdit,
+            difficulty: difficultyEdit,
+          })
+          document.getElementById("changesText").style.display = "block";
+
+        }
+
+    </script>
+  </body>
+
+</html>

@@ -62,4 +62,3 @@ def home(request):
 def checkprogress(request):
     return render(request, 'checkprogress.html')
 
-
