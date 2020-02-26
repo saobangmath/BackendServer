@@ -44,7 +44,7 @@
     <h6>Question Statistics</h6>
     <p id ="questionStats"></p>
     <h6>Edit Question</h6>
-    Question: <input id = "qnEdit" class="form-control" type="text" placeholder="Default input">
+    Question: <input id = "qnEdit"  class="form-control" type="text" placeholder="Default input">
     Option 1: <input id = "opAEdit" class="form-control" type="text" placeholder="Default input">
     Option 2: <input id = "opBEdit" class="form-control" type="text" placeholder="Default input">
     Option 3: <input id = "opCEdit" class="form-control" type="text" placeholder="Default input">
@@ -252,45 +252,43 @@
     };
 
     function saveNewQuestion(id) {
-    console.log(id);
-    var qnAdd = document.getElementById("qnAdd").value;
-    var opAAdd = document.getElementById("opAAdd").value;
-    var opBAdd = document.getElementById("opBAdd").value;
-    var opCAdd = document.getElementById("opCAdd").value;
-    var opDAdd = document.getElementById("opDAdd").value;
-    var difficultyAdd = document.getElementById("difficultyAdd").value;
-    var correctAdd = document.getElementById("correctAdd").value;
+      console.log(id);
+      var qnAdd = document.getElementById("qnAdd").value;
+      var opAAdd = document.getElementById("opAAdd").value;
+      var opBAdd = document.getElementById("opBAdd").value;
+      var opCAdd = document.getElementById("opCAdd").value;
+      var opDAdd = document.getElementById("opDAdd").value;
+      var difficultyAdd = document.getElementById("difficultyAdd").value;
+      var correctAdd = document.getElementById("correctAdd").value;
 
-    database.ref("Questions/").child(id).set({
-        qn: qnAdd,
-        opA: opAAdd,
-        opB: opBAdd,
-        opC: opCAdd,
-        opD: opDAdd,
-        correct: correctAdd,
-        difficulty: difficultyAdd,
-      });
+      database.ref("Questions/").child(id).set({
+          qn: qnAdd,
+          opA: opAAdd,
+          opB: opBAdd,
+          opC: opCAdd,
+          opD: opDAdd,
+          correct: correctAdd,
+          difficulty: difficultyAdd,
+        });
 
-      document.getElementById("changesTextAdd").style.display = "block";
-      document.getElementById("qnAdd").value = "";
-      document.getElementById("opAAdd").value = "";
-      document.getElementById("opBAdd").value = "";
-      document.getElementById("opCAdd").value = "";
-      document.getElementById("opDAdd").value = "";
-      document.getElementById("difficultyAdd").value = "";
-      document.getElementById("correctAdd").value = "";
+        document.getElementById("changesTextAdd").style.display = "block";
+        document.getElementById("qnAdd").value = "";
+        document.getElementById("opAAdd").value = "";
+        document.getElementById("opBAdd").value = "";
+        document.getElementById("opCAdd").value = "";
+        document.getElementById("opDAdd").value = "";
+        document.getElementById("difficultyAdd").value = "";
+        document.getElementById("correctAdd").value = "";
     };
 
     function newQuestionID(){
-      var child_count = document.getElementById("child_count").innerHTML;
-      var new_count = parseInt(child_count)+1;
-      var new_ID = 'question'+new_count;
-      return new_ID
+      var new_ID = new Date() + "";
+      return new_ID;
     };
 
     function addQuestion(){
         new_id = newQuestionID();
-
+        console.log(new_id + "");
         document.getElementById("changesTextAdd").style.display = "none";
         var qnAdd = document.getElementById("qnAdd");
         var opAAdd = document.getElementById("opAAdd");
