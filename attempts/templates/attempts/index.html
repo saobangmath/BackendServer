@@ -48,6 +48,7 @@
     UserId: <input id = "userIdEdit" class="form-control" type="text" placeholder="Default input">
   </div>
   <h6 id = "changesText" style = "display:none; text-align: center; color: green;">Changes saved!</h6>
+  <h6 id = "removeAttemptText" style = "display:none; text-align: center; color: green;">Attempt removed!</h6>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
     <button id = "deleteButton" value = "" type="button" class="btn btn-secondary" onclick="deleteAttempt(this.value)">Delete</button>
@@ -78,7 +79,7 @@
   <h6 id = "changesTextAdd" style = "display:none; text-align: center; color: green;">Attempt Added!</h6>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    <button id = "saveButton2" value = "" type="button" class="btn btn-primary" onclick = "saveNewAttempt(this.value)">Add Attempt</button>
+    <button id = "saveButton2" value = "" type="button" class="btn btn-primary" onclick = "saveNewAttempt(this.value)">Save Changes</button>
   </div>
 </div>
 </div>
@@ -114,51 +115,48 @@
       tr.setAttribute("data-target", "#attemptModal");
       tr.setAttribute("onClick", "setAttemptModal(this.id)")
 
-      <!--var td1 = document.createElement("td")-->
-      <!--td1.innerHTML = attempt.val().attemptId-->
+      var td1 = document.createElement("td");
+      td1.innerHTML = attempt.val().levelId;
       var td2 = document.createElement("td");
-      td2.innerHTML = attempt.val().levelId;
+      td2.innerHTML = attempt.val().score;
       var td3 = document.createElement("td");
-      td3.innerHTML = attempt.val().score;
+      td3.innerHTML = attempt.val().time;
       var td4 = document.createElement("td");
-      td4.innerHTML = attempt.val().time;
-      var td5 = document.createElement("td");
-      td5.innerHTML = attempt.val().userId;
+      td4.innerHTML = attempt.val().userId;
 
-      <!--tr.appendChild(td1);-->
+      tr.appendChild(td1);
       tr.appendChild(td2);
       tr.appendChild(td3);
       tr.appendChild(td4);
-      tr.appendChild(td5);
+
       tbody.appendChild(tr);
     })
   });
 
   function setAttemptModal(id) {
       document.getElementById("changesText").style.display = "none";
+      document.getElementById("removeAttemptText").style.display = "none";
       var content = document.getElementById("attemptStats");
       database.ref('Attempts/' + id).once('value', function(snapshot) {
+      console.log(snapshot.val());
 
-      <!--var attemptIdEdit = document.getElementById("attemptIdEdit");-->
       var levelIdEdit = document.getElementById("levelIdEdit");
       var scoreEdit = document.getElementById("scoreEdit");
       var timeEdit = document.getElementById("timeEdit");
-      var userIdEdit = document.getElementById("userEdit");
+      var userIdEdit = document.getElementById("userIdEdit");
 
-      <!--attemptIdEdit.setAttribute("value", snapshot.val().attemptId);-->
-      levelIdEdit.setAttribute("value", snapshot.val().levelId);
-      scoreEdit.setAttribute("value", snapshot.val().score);
-      timeEdit.setAttribute("value", snapshot.val().time);
-      userIdEdit.setAttribute("value", snapshot.val().userId);
+      levelIdEdit.value = snapshot.val().levelId;
+      scoreEdit.value = snapshot.val().score;
+      timeEdit.value = snapshot.val().time;
+      userIdEdit.value = snapshot.val().userId;
 
       document.getElementById("saveButton").setAttribute("value", id);
-
+      document.getElementById("deleteButton").setAttribute("value", id);
     })
   };
    function deleteAttempt(id){
       database.ref("Attempts/").child(id).remove();
       document.getElementById("removeAttemptText").style.display = "block";
-      <!--document.getElementById("attemptIdEdit").value = "";-->
       document.getElementById("levelIdEdit").value = "";
       document.getElementById("scoreEdit").value = "";
       document.getElementById("timeEdit").value = "";
@@ -166,15 +164,12 @@
   };
   function saveAttempt(id) {
     console.log(id);
-
-    <!--var attemptIdEdit = documentation.getElementById("attemptIdEdit").value;-->
     var levelIdEdit = document.getElementById("levelIdEdit").value;
     var scoreEdit = document.getElementById("scoreEdit").value;
     var timeEdit = document.getElementById("timeEdit").value;
     var userIdEdit = document.getElementById("userIdEdit").value;
 
-    database.ref("Attempts/").child(id).update({
-        attemptId: attemptIdEdit,
+    database.ref("Attempts/").child(id).set({
         levelId: levelIdEdit,
         score: scoreEdit,
         time: timeEdit,
@@ -185,12 +180,10 @@
     }
   function saveNewAttempt(id){
       document.getElementById("changesTextAdd").style.display = "none";
-      <!--var attemptIdAdd = document.getElementById("attemptIdAdd");-->
       var levelIdAdd = document.getElementById("levelIdAdd");
       var scoreAdd = document.getElementById("scoreAdd");
       var timeAdd = document.getElementById("timeAdd");
       var userIdAdd = document.getElementById("userIdAdd");
-      <!--document.getElementById("saveButton2").setAttribute("value", new_id);-->
 
       database.ref("Attempts/").push({
           levelId: levelIdAdd,
@@ -199,14 +192,18 @@
           userId: userIdAdd
       });
       document.getElementById("changesText").style.display = "block";
-      document.getElementById("attemptIdAdd").value = "";
       document.getElementById("levelIdAdd").value = "";
       document.getElementById("scoreAdd").value = "";
       document.getElementById("timeAdd").value = "";
       document.getElementById("userIdAdd").value = "";
   }
   function addAttempt(){
-
+      document.getElementById("changesTextAdd").style.display = "none";
+      var levelIdAdd = document.getElementById("levelIdAdd");
+      var scoreAdd = document.getElementById("scoreAdd");
+      var timeAdd = document.getElementById("timeAdd");
+      var userIdAdd = document.getElementById("userIdAdd");
+      //document.getElementById("saveButton2").setAttribute("value", 0);
   }
 </script>
 {% endblock %}

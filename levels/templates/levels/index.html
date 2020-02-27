@@ -25,6 +25,7 @@
   </table>
   <p>Number of Levels: <span id = "child_count" value="0"></span></p>
   <button onClick="addLevel()" data-target="#addLevelModal" data-toggle="modal">Add Level</button>
+  <h6 id = "debug" style = "display:none; text-align: center; color: green;">Hi</h6>
 </div>
 </section>
 
@@ -289,8 +290,6 @@ function saveNewLevel(id) {
 
 
     function addLevel(){
-
-
         document.getElementById("changesTextAdd").style.display = "none";
         var lvAdd = document.getElementById("lvAdd");
         var bossAdd = document.getElementById("bossAdd");

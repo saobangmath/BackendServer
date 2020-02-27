@@ -155,7 +155,6 @@
     document.getElementById("changesText").style.display = "none";
     document.getElementById("removeQuestionText").style.display = "none";
     var content = document.getElementById("questionStats");
-
     database.ref('Questions/' + id).once('value', function(snapshot) {
       console.log(snapshot.val());
       var answers = [snapshot.val().A, snapshot.val().B, snapshot.val().C, snapshot.val().D];
