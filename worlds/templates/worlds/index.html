@@ -160,12 +160,12 @@
       var opDEdit = document.getElementById("opDEdit");
       var opEEdit = document.getElementById("opEEdit");
 
-      wldEdit.setAttribute("value", snapshot.val().wld);
-      opAEdit.setAttribute("value", snapshot.val().opA);
-      opBEdit.setAttribute("value", snapshot.val().opB);
-      opCEdit.setAttribute("value", snapshot.val().opC);
-      opDEdit.setAttribute("value", snapshot.val().opD);
-      opEEdit.setAttribute("value", snapshot.val().opE);
+      wldEdit.value = snapshot.val().wld;
+      opAEdit.value = snapshot.val().opA;
+      opBEdit.value = snapshot.val().opB;
+      opCEdit.value = snapshot.val().opC;
+      opDEdit.value = snapshot.val().opD;
+      opEEdit.value = snapshot.val().opE;
       document.getElementById("deleteButton").setAttribute("value", id);
       document.getElementById("saveButton").setAttribute("value", id);
     })

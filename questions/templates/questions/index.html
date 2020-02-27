@@ -198,13 +198,13 @@
       var opDEdit = document.getElementById("opDEdit");
       var correctEdit = document.getElementById("correctEdit");
       var difficultyEdit = document.getElementById("difficultyEdit");
-      qnEdit.setAttribute("value", snapshot.val().qn);
-      opAEdit.setAttribute("value", snapshot.val().opA);
-      opBEdit.setAttribute("value", snapshot.val().opB);
-      opCEdit.setAttribute("value", snapshot.val().opC);
-      opDEdit.setAttribute("value", snapshot.val().opD);
-      correctEdit.setAttribute("value", snapshot.val().correct);
-      difficultyEdit.setAttribute("value", snapshot.val().difficulty);
+      qnEdit.value = snapshot.val().qn;
+      opAEdit.value = snapshot.val().opA;
+      opBEdit.value = snapshot.val().opB;
+      opCEdit.value = snapshot.val().opC;
+      opDEdit.value = snapshot.val().opD;
+      correctEdit.value = snapshot.val().correct;
+      difficultyEdit.value = snapshot.val().difficulty;
       document.getElementById("saveButton").setAttribute("value", id);
       document.getElementById("deleteButton").setAttribute("value", id);
 

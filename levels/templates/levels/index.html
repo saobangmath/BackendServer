@@ -195,14 +195,14 @@
       var qnEEdit = document.getElementById("qnEEdit");
       var codeEdit = document.getElementById("codeEdit");
 
-      lvEdit.setAttribute("value", snapshot.val().lv);
-      bossEdit.setAttribute("value", snapshot.val().boss);
-      qnAEdit.setAttribute("value", snapshot.val().qnA);
-      qnBEdit.setAttribute("value", snapshot.val().qnB);
-      qnCEdit.setAttribute("value", snapshot.val().qnC);
-      qnDEdit.setAttribute("value", snapshot.val().qnD);
-      qnEEdit.setAttribute("value", snapshot.val().qnE);
-      codeEdit.setAttribute("value", snapshot.val().code);
+      lvEdit.value = snapshot.val().lv;
+      bossEdit.value = snapshot.val().boss;
+      qnAEdit.value = snapshot.val().qnA;
+      qnBEdit.value = snapshot.val().qnB;
+      qnCEdit.value = snapshot.val().qnC;
+      qnDEdit.value = snapshot.val().qnD;
+      qnEEdit.value = snapshot.val().qnE;
+      codeEdit.value = snapshot.val().code;
       document.getElementById("deleteButton").setAttribute("value", id);
       document.getElementById("saveButton").setAttribute("value", id);
     })
