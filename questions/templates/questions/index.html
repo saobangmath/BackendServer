@@ -261,7 +261,7 @@
       var difficultyAdd = document.getElementById("difficultyAdd").value;
       var correctAdd = document.getElementById("correctAdd").value;
 
-      database.ref("Questions/").child(id).set({
+      database.ref("Questions/").push({
           qn: qnAdd,
           opA: opAAdd,
           opB: opBAdd,

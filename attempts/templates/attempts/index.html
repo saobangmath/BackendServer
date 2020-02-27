@@ -9,7 +9,7 @@
   <table class="table">
     <thead class="thead-light" style = "border-radius: 10px;">
       <tr>
-        <th scope="col">AttemptId</th>
+        <!--<th scope="col">AttemptId</th>-->
         <th scope="col">LevelId</th>
         <th scope="col">Score</th>
         <th scope="col">Time</th>
@@ -41,7 +41,7 @@
     <h6>Attempt Statistics</h6>
     <p id ="attemptStats"></p>
     <h6>Edit Attempt</h6>
-    AttemptId: <input id = "attemptIdEdit" class="form-control" type="text" placeholder="Default input">
+    <!--AttemptId: <input id = "attemptIdEdit" class="form-control" type="text" placeholder="Default input">-->
     LevelId: <input id = "levelIdEdit" class="form-control" type="text" placeholder="Default input">
     Score: <input id = "scoreEdit" class="form-control" type="text" placeholder="Default input">
     Time: <input id = "timeEdit" class="form-control" type="text" placeholder="Default input">
@@ -69,7 +69,7 @@
   </div>
   <div class="modal-body">
     <h6>Add Attempt</h6>
-    AttemptId: <input id = "attemptIdAdd" class="form-control" type="text" placeholder="Default input">
+    <!--AttemptId: <input id = "attemptIdAdd" class="form-control" type="text" placeholder="Default input">-->
     LevelId: <input id = "levelIdAdd" class="form-control" type="text" placeholder="Default input">
     Score: <input id = "scoreAdd" class="form-control" type="text" placeholder="Default input">
     Time: <input id = "timeAdd" class="form-control" type="text" placeholder="Default input">
@@ -114,8 +114,8 @@
       tr.setAttribute("data-target", "#attemptModal");
       tr.setAttribute("onClick", "setAttemptModal(this.id)")
 
-      var td1 = document.createElement("td")
-      td1.innerHTML = attempt.val().attemptId
+      <!--var td1 = document.createElement("td")-->
+      <!--td1.innerHTML = attempt.val().attemptId-->
       var td2 = document.createElement("td");
       td2.innerHTML = attempt.val().levelId;
       var td3 = document.createElement("td");
@@ -125,7 +125,7 @@
       var td5 = document.createElement("td");
       td5.innerHTML = attempt.val().userId;
 
-      tr.appendChild(td1);
+      <!--tr.appendChild(td1);-->
       tr.appendChild(td2);
       tr.appendChild(td3);
       tr.appendChild(td4);
@@ -139,25 +139,26 @@
       var content = document.getElementById("attemptStats");
       database.ref('Attempts/' + id).once('value', function(snapshot) {
 
-      var attemptIdEdit = document.getElementById("attemptIdEdit");
+      <!--var attemptIdEdit = document.getElementById("attemptIdEdit");-->
       var levelIdEdit = document.getElementById("levelIdEdit");
       var scoreEdit = document.getElementById("scoreEdit");
       var timeEdit = document.getElementById("timeEdit");
       var userIdEdit = document.getElementById("userEdit");
 
-      attemptIdEdit.setAttribute("value", snapshot.val().attemptId);
+      <!--attemptIdEdit.setAttribute("value", snapshot.val().attemptId);-->
       levelIdEdit.setAttribute("value", snapshot.val().levelId);
       scoreEdit.setAttribute("value", snapshot.val().score);
       timeEdit.setAttribute("value", snapshot.val().time);
       userIdEdit.setAttribute("value", snapshot.val().userId);
 
       document.getElementById("saveButton").setAttribute("value", id);
+
     })
   };
    function deleteAttempt(id){
       database.ref("Attempts/").child(id).remove();
       document.getElementById("removeAttemptText").style.display = "block";
-      document.getElementById("attemptIdEdit").value = "";
+      <!--document.getElementById("attemptIdEdit").value = "";-->
       document.getElementById("levelIdEdit").value = "";
       document.getElementById("scoreEdit").value = "";
       document.getElementById("timeEdit").value = "";
@@ -166,7 +167,7 @@
   function saveAttempt(id) {
     console.log(id);
 
-    var attemptIdEdit = documentation.getElementById("attemptIdEdit").value;
+    <!--var attemptIdEdit = documentation.getElementById("attemptIdEdit").value;-->
     var levelIdEdit = document.getElementById("levelIdEdit").value;
     var scoreEdit = document.getElementById("scoreEdit").value;
     var timeEdit = document.getElementById("timeEdit").value;
@@ -184,15 +185,14 @@
     }
   function saveNewAttempt(id){
       document.getElementById("changesTextAdd").style.display = "none";
-      var attemptIdAdd = document.getElementById("attemptIdAdd");
+      <!--var attemptIdAdd = document.getElementById("attemptIdAdd");-->
       var levelIdAdd = document.getElementById("levelIdAdd");
       var scoreAdd = document.getElementById("scoreAdd");
       var timeAdd = document.getElementById("timeAdd");
       var userIdAdd = document.getElementById("userIdAdd");
-      document.getElementById("saveButton2").setAttribute("value", id);
+      <!--document.getElementById("saveButton2").setAttribute("value", new_id);-->
 
-      database.ref("Attempts/").child(id).set({
-          attemptId: attemptIdAdd,
+      database.ref("Attempts/").push({
           levelId: levelIdAdd,
           score: scoreAdd,
           time: timeAdd,
