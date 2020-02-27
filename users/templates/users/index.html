@@ -184,14 +184,19 @@
     };
 
 function saveNewUser(id) {
+      database.ref('LastId').once('value', function(snapshot) {
+      id = snapshot.val().Levels;
+      id = eval(id);
+      id = id + 1;
       console.log(id);
+      database.ref("LastId").update({ Levels:id,})
       var usrAdd = document.getElementById("usrAdd").value;
       var llvAdd = document.getElementById("llvAdd").value;
       var chrAdd = document.getElementById("chrAdd").value;
 
 
 
-      database.ref("Users/").push({
+      database.ref("Users/").child(id).set({
           usr: usrAdd,
           llv: llvAdd,
           chr: chrAdd,
@@ -203,7 +208,7 @@ function saveNewUser(id) {
         document.getElementById("llvAdd").value = "";
         document.getElementById("chrAdd").value = "";
 
-
+      })
     };
 
 

@@ -22,6 +22,7 @@
     </tbody>
   </table>
   <p>Number of Worlds: <span id = "child_count" value="0"></span></p>
+
   <button onClick="addWorld()" data-target="#addWorldModal" data-toggle="modal">Add World</button>
 </div>
 </section>
@@ -84,6 +85,7 @@
   </div>
   <div class="modal-footer">
     <h6 id = "changesTextAdd" style = "display:none; text-align: center; color: green;">World Added!</h6>
+
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
     <button id = "saveButton2" value = "" type="button" class="btn btn-primary" onclick = "saveNewWorld(this.value)">Save changes</button>
   </div>
@@ -111,9 +113,14 @@
   var tbody = document.getElementById("worlds_content");
 
   // Initialise table
+
+
+
+
   database.ref('Worlds').on('value', function(snapshot) {
     tbody.innerHTML = "";
     document.getElementById("child_count").innerHTML = "0";
+
     snapshot.forEach(function(wld) {
       var cur = document.getElementById("child_count").innerHTML;
       document.getElementById("child_count").innerHTML = parseInt(cur) + 1;
@@ -205,7 +212,13 @@
 };
 
 function saveNewWorld(id) {
+      database.ref('LastId').once('value', function(snapshot) {
+      id = snapshot.val().Worlds;
+      id = eval(id);
+      id = id + 1;
       console.log(id);
+      database.ref("LastId").update({ Worlds:id,})
+
       var wldAdd = document.getElementById("wldAdd").value;
       var opAAdd = document.getElementById("opAAdd").value;
       var opBAdd = document.getElementById("opBAdd").value;
@@ -214,7 +227,7 @@ function saveNewWorld(id) {
       var opEAdd = document.getElementById("opEAdd").value;
 
 
-      database.ref("Worlds/").push({
+      database.ref("Worlds/").child(id).set({
           wld: wldAdd,
           opA: opAAdd,
           opB: opBAdd,
@@ -230,7 +243,7 @@ function saveNewWorld(id) {
         document.getElementById("opCAdd").value = "";
         document.getElementById("opDAdd").value = "";
         document.getElementById("opEAdd").value = "";
-
+        });
     };
 
 

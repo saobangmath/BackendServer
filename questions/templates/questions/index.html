@@ -253,7 +253,12 @@
     };
 
     function saveNewQuestion(id) {
+      database.ref('LastId').once('value', function(snapshot) {
+      id = snapshot.val().Questions;
+      id = eval(id);
+      id = id + 1;
       console.log(id);
+      database.ref("LastId").update({ Questions:id,})
       var qnAdd = document.getElementById("qnAdd").value;
       var opAAdd = document.getElementById("opAAdd").value;
       var opBAdd = document.getElementById("opBAdd").value;
@@ -262,7 +267,7 @@
       var difficultyAdd = document.getElementById("difficultyAdd").value;
       var correctAdd = document.getElementById("correctAdd").value;
 
-      database.ref("Questions/").push({
+      database.ref("Questions/").child(id).set({
           qn: qnAdd,
           opA: opAAdd,
           opB: opBAdd,
@@ -280,6 +285,7 @@
         document.getElementById("opDAdd").value = "";
         document.getElementById("difficultyAdd").value = "";
         document.getElementById("correctAdd").value = "";
+        })
     };
 
     function newQuestionID(){

@@ -247,7 +247,13 @@
 };
 
 function saveNewLevel(id) {
+      database.ref('LastId').once('value', function(snapshot) {
+      id = snapshot.val().Levels;
+      id = eval(id);
+      id = id + 1;
       console.log(id);
+      database.ref("LastId").update({ Levels:id,})
+      <!--console.log(id);-->
       var lvAdd = document.getElementById("lvAdd").value;
       var bossAdd = document.getElementById("bossAdd").value;
       var qnAAdd = document.getElementById("qnAAdd").value;
@@ -257,7 +263,7 @@ function saveNewLevel(id) {
       var qnEAdd = document.getElementById("qnEAdd").value;
       var codeAdd = document.getElementById("codeAdd").value;
 
-      database.ref("Levels/").push({
+      database.ref("Levels/").child(id).set({
           lv: lvAdd,
           boss: bossAdd,
           qnA: qnAAdd,
@@ -277,6 +283,7 @@ function saveNewLevel(id) {
         document.getElementById("qnDAdd").value = "";
         document.getElementById("qnEAdd").value = "";
         document.getElementById("codeAdd").value = "";
+        })
     };
 
 
