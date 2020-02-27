@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'attempts.apps.AttemptsConfig',
     'questions.apps.QuestionsConfig',
     'levels.apps.LevelsConfig',
+    'worlds.apps.WorldsConfig',
+    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

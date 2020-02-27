@@ -29,6 +29,8 @@ urlpatterns = [
     path('questions/', include('questions.urls')),
     path('levels/', include('levels.urls')),
     path('attempts/', include('attempts.urls')),
+    path('worlds/', include('worlds.urls')),
+    path('users/', include('users.urls')),
 ]
 
 # path('', include('home.urls')),

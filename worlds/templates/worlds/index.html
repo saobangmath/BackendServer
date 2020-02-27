@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<br>
+<section class="home-about-area section-gap">
+<div class = "container">
+  <h2>Worlds</h2> <br>
+  <p>Click on each individual world to view or edit them. &nbsp &nbsp &nbsp &nbsp<button onClick="addWorld()" data-target="#addWorldModal" data-toggle="modal">Add World</button></p>
+  <table class="table">
+    <thead class="thead-light" style = "border-radius: 10px;">
+      <tr>
+        <th scope="col">World</th>
+        <th scope="col">Level 1</th>
+        <th scope="col">Level 2</th>
+        <th scope="col">Level 3</th>
+        <th scope="col">Level 4</th>
+        <th scope="col">Level 5</th>
+      </tr>
+    </thead>
+    <tbody id = "worlds_content">
+
+    </tbody>
+  </table>
+  <p>Number of Worlds: <span id = "child_count" value="0"></span></p>
+  <button onClick="addWorld()" data-target="#addWorldModal" data-toggle="modal">Add World</button>
+</div>
+</section>
+
+
+<!-- Modal -->
+<div class="modal fade" id="worldModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLongTitle">World Details</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <!--<h6>Question Statistics</h6>-->
+    <!--<p id ="worldStats"></p>-->
+    <h6>Edit World</h6>
+    World: <input id = "wldEdit" class="form-control" type="text" placeholder="Default input">
+    <!--Correct Ans: <input id = "correctEdit" class="form-control" type="text" placeholder="Default input">-->
+    Level A: <input id = "opAEdit" class="form-control" type="text" placeholder="Default input">
+    Level B: <input id = "opBEdit" class="form-control" type="text" placeholder="Default input">
+    Level C: <input id = "opCEdit" class="form-control" type="text" placeholder="Default input">
+    Level D: <input id = "opDEdit" class="form-control" type="text" placeholder="Default input">
+    Level E: <input id = "opEEdit" class="form-control" type="text" placeholder="Default input">
+
+  </div>
+  <h6 id = "changesText" style = "display:none; text-align: center; color: green;">Changes saved!</h6>
+  <h6 id = "removeWorldText" style = "display:none; text-align: center; color: green;">World removed!</h6>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button id = "deleteButton" value = "" type="button" class="btn btn-secondary" onclick="deleteWorld(this.value)">Delete</button>
+    <button id = "saveButton" value = "" type="button" class="btn btn-primary" onclick = "saveWorld(this.value)">Save changes</button>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addWorldModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLongTitle">Add World</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <h6>Add World</h6>
+    World: <input id = "wldAdd" class="form-control" type="text" placeholder="Default input">
+    Level A: <input id = "opAAdd" class="form-control" type="text" placeholder="Default input">
+    Level B: <input id = "opBAdd" class="form-control" type="text" placeholder="Default input">
+    Level C: <input id = "opCAdd" class="form-control" type="text" placeholder="Default input">
+    Level D: <input id = "opDAdd" class="form-control" type="text" placeholder="Default input">
+    Level E: <input id = "opEAdd" class="form-control" type="text" placeholder="Default input">
+    <!--Correct Ans: <input id = "correctAdd" class="form-control" type="text" placeholder="Default input">-->
+    <!--Difficulty: <input id = "difficultyAdd" class="form-control" type="text" placeholder="Default input">-->
+  </div>
+  <div class="modal-footer">
+    <h6 id = "changesTextAdd" style = "display:none; text-align: center; color: green;">World Added!</h6>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button id = "saveButton2" value = "" type="button" class="btn btn-primary" onclick = "saveNewWorld(this.value)">Save changes</button>
+  </div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCbrmnFV_4UBbmFyJIhqIM_J5QDbpGkgRo",
+    authDomain: "marvellous-kittens.firebaseapp.com",
+    databaseURL: "https://marvellous-kittens.firebaseio.com",
+    projectId: "marvellous-kittens",
+    storageBucket: "marvellous-kittens.appspot.com",
+    messagingSenderId: "942471948637",
+    appId: "1:942471948637:web:29eec0236cd1e64d18e0b4"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+
+  var tbody = document.getElementById("worlds_content");
+
+  // Initialise table
+  database.ref('Worlds').on('value', function(snapshot) {
+    tbody.innerHTML = "";
+    document.getElementById("child_count").innerHTML = "0";
+    snapshot.forEach(function(wld) {
+      var cur = document.getElementById("child_count").innerHTML;
+      document.getElementById("child_count").innerHTML = parseInt(cur) + 1;
+      var tr = document.createElement("tr");
+      tr.setAttribute("class", "dataRow");
+      tr.setAttribute("id", wld.key);
+      tr.setAttribute("data-toggle", "modal");
+      tr.setAttribute("data-target", "#worldModal");
+      tr.setAttribute("onClick", "setWorldModal(this.id)")
+      var td1 = document.createElement("td");
+      td1.innerHTML = wld.val().wld;
+      var td3 = document.createElement("td");
+      td3.innerHTML = wld.val().opA;
+      var td4 = document.createElement("td");
+      td4.innerHTML = wld.val().opB;
+      var td5 = document.createElement("td");
+      td5.innerHTML = wld.val().opC;
+      var td6 = document.createElement("td");
+      td6.innerHTML = wld.val().opD;
+      var td7 = document.createElement("td");
+      td7.innerHTML = wld.val().opE;
+      tr.appendChild(td1);
+
+      tr.appendChild(td3);
+      tr.appendChild(td4);
+      tr.appendChild(td5);
+      tr.appendChild(td6);
+      tr.appendChild(td7);
+      tbody.appendChild(tr);
+    })
+  });
+
+  function setWorldModal(id) {
+    document.getElementById("changesText").style.display = "none";
+    document.getElementById("removeWorldText").style.display = "none";
+    database.ref('Worlds/' + id).once('value', function(snapshot) {
+      console.log(snapshot.val());
+
+
+      var wldEdit = document.getElementById("wldEdit");
+      var opAEdit = document.getElementById("opAEdit");
+      var opBEdit = document.getElementById("opBEdit");
+      var opCEdit = document.getElementById("opCEdit");
+      var opDEdit = document.getElementById("opDEdit");
+      var opEEdit = document.getElementById("opEEdit");
+
+      wldEdit.setAttribute("value", snapshot.val().wld);
+      opAEdit.setAttribute("value", snapshot.val().opA);
+      opBEdit.setAttribute("value", snapshot.val().opB);
+      opCEdit.setAttribute("value", snapshot.val().opC);
+      opDEdit.setAttribute("value", snapshot.val().opD);
+      opEEdit.setAttribute("value", snapshot.val().opE);
+      document.getElementById("deleteButton").setAttribute("value", id);
+      document.getElementById("saveButton").setAttribute("value", id);
+    })
+  };
+
+  function saveWorld(id) {
+    console.log(id);
+    var wldEdit = document.getElementById("wldEdit").value;
+    var opAEdit = document.getElementById("opAEdit").value;
+    var opBEdit = document.getElementById("opBEdit").value;
+    var opCEdit = document.getElementById("opCEdit").value;
+    var opDEdit = document.getElementById("opDEdit").value;
+    var opEEdit = document.getElementById("opEEdit").value;
+
+    database.ref("Worlds/").child(id).update({
+        wld: wldEdit,
+        opA: opAEdit,
+        opB: opBEdit,
+        opC: opCEdit,
+        opD: opDEdit,
+        opE: opEEdit,
+      })
+      document.getElementById("changesText").style.display = "block";
+
+    };
+
+    function deleteWorld(id){
+    database.ref("Worlds/").child(id).remove();
+    document.getElementById("removeWorldText").style.display = "block";
+    document.getElementById("wldEdit").value = "";
+    document.getElementById("opAEdit").value = "";
+    document.getElementById("opBEdit").value = "";
+    document.getElementById("opCEdit").value = "";
+    document.getElementById("opDEdit").value = "";
+    document.getElementById("opEEdit").value = "";
+
+};
+
+function saveNewWorld(id) {
+      console.log(id);
+      var wldAdd = document.getElementById("wldAdd").value;
+      var opAAdd = document.getElementById("opAAdd").value;
+      var opBAdd = document.getElementById("opBAdd").value;
+      var opCAdd = document.getElementById("opCAdd").value;
+      var opDAdd = document.getElementById("opDAdd").value;
+      var opEAdd = document.getElementById("opEAdd").value;
+
+
+      database.ref("Worlds/").push({
+          wld: wldAdd,
+          opA: opAAdd,
+          opB: opBAdd,
+          opC: opCAdd,
+          opD: opDAdd,
+          opE: opEAdd,
+        });
+
+        document.getElementById("changesTextAdd").style.display = "block";
+        document.getElementById("wldAdd").value = "";
+        document.getElementById("opAAdd").value = "";
+        document.getElementById("opBAdd").value = "";
+        document.getElementById("opCAdd").value = "";
+        document.getElementById("opDAdd").value = "";
+        document.getElementById("opEAdd").value = "";
+
+    };
+
+
+
+    function addWorld(){
+
+
+        document.getElementById("changesTextAdd").style.display = "none";
+        var wldAdd = document.getElementById("wldAdd");
+        var opAAdd = document.getElementById("opAAdd");
+        var opBAdd = document.getElementById("opBAdd");
+        var opCAdd = document.getElementById("opCAdd");
+        var opDAdd = document.getElementById("opDAdd");
+        var opEAdd = document.getElementById("opEAdd");
+
+        <!--document.getElementById("saveButton2").setAttribute("value", new_id);-->
+
+    };
+
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+  .dataRow:hover {
+    background-color:#dddddd;
+  }
+  .table {
+    border-radius: 20px;
+  }
+</style>
+{% endblock %}

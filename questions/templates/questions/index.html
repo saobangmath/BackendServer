@@ -153,6 +153,7 @@
   function setQuestionModal(id) {
 
     document.getElementById("changesText").style.display = "none";
+    document.getElementById("removeQuestionText").style.display = "none";
     var content = document.getElementById("questionStats");
 
     database.ref('Questions/' + id).once('value', function(snapshot) {
