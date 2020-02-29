@@ -114,17 +114,19 @@
 
   // Initialise table
   database.ref('Questions').on('value', function(snapshot) {
-    tbody.innerHTML = "";
-    document.getElementById("child_count").innerHTML = "0";
-    snapshot.forEach(function(qn) {
+      tbody.innerHTML = "";
+      document.getElementById("child_count").innerHTML = "0";
+      snapshot.forEach(function(qn) {
       var cur = document.getElementById("child_count").innerHTML;
       document.getElementById("child_count").innerHTML = parseInt(cur) + 1;
+
       var tr = document.createElement("tr");
       tr.setAttribute("class", "dataRow");
       tr.setAttribute("id", qn.key);
       tr.setAttribute("data-toggle", "modal");
       tr.setAttribute("data-target", "#questionModal");
       tr.setAttribute("onClick", "setQuestionModal(this.id)")
+
       var td1 = document.createElement("td");
       td1.innerHTML = qn.val().qn;
       var td2 = document.createElement("td");
@@ -139,6 +141,7 @@
       td6.innerHTML = qn.val().opD;
       var td7 = document.createElement("td");
       td7.innerHTML = qn.val().correct;
+
       tr.appendChild(td1);
       tr.appendChild(td2);
       tr.appendChild(td3);
@@ -146,6 +149,7 @@
       tr.appendChild(td5);
       tr.appendChild(td6);
       tr.appendChild(td7);
+
       tbody.appendChild(tr);
     })
   });

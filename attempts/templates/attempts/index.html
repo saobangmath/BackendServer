@@ -9,7 +9,6 @@
   <table class="table">
     <thead class="thead-light" style = "border-radius: 10px;">
       <tr>
-        <!--<th scope="col">AttemptId</th>-->
         <th scope="col">LevelId</th>
         <th scope="col">Score</th>
         <th scope="col">Time</th>
@@ -79,7 +78,7 @@
   <h6 id = "changesTextAdd" style = "display:none; text-align: center; color: green;">Attempt Added!</h6>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    <button id = "saveButton2" value = "" type="button" class="btn btn-primary" onclick = "saveNewAttempt(this.value)">Save Changes</button>
+    <button id = "saveButton2" value = "" type="button" class="btn btn-primary" onclick = "saveNewAttempt(this.value)">Add Attempt</button>
   </div>
 </div>
 </div>
@@ -107,8 +106,10 @@
   database.ref('Attempts').on('value', function(snapshot) {
     tbody.innerHTML = "";
     snapshot.forEach(function(attempt) {
-      var tr = document.createElement("tr");
+      var cur = document.getElementById("child_count").innerHTML = "0";
+      document.getElementById("child_count").innerHTML = parseInt(cur) + 1;
 
+      var tr = document.createElement("tr");
       tr.setAttribute("class", "dataRow");
       tr.setAttribute("id", attempt.key);
       tr.setAttribute("data-toggle", "modal");
@@ -145,6 +146,7 @@
       var timeEdit = document.getElementById("timeEdit");
       var userIdEdit = document.getElementById("userIdEdit");
 
+      document.getElementById("changesTextAdd").style.display = "block";
       levelIdEdit.value = snapshot.val().levelId;
       scoreEdit.value = snapshot.val().score;
       timeEdit.value = snapshot.val().time;
@@ -162,6 +164,7 @@
       document.getElementById("timeEdit").value = "";
       document.getElementById("userIdEdit").value = "";
   };
+
   function saveAttempt(id) {
     console.log(id);
     var levelIdEdit = document.getElementById("levelIdEdit").value;
@@ -169,33 +172,41 @@
     var timeEdit = document.getElementById("timeEdit").value;
     var userIdEdit = document.getElementById("userIdEdit").value;
 
-    database.ref("Attempts/").child(id).set({
+    database.ref("Attempts/").child(id).update({
         levelId: levelIdEdit,
         score: scoreEdit,
         time: timeEdit,
         userId: userIdEdit,
-      })
+      });
       document.getElementById("changesText").style.display = "block";
 
-    }
+   }
   function saveNewAttempt(id){
-      document.getElementById("changesTextAdd").style.display = "none";
-      var levelIdAdd = document.getElementById("levelIdAdd");
-      var scoreAdd = document.getElementById("scoreAdd");
-      var timeAdd = document.getElementById("timeAdd");
-      var userIdAdd = document.getElementById("userIdAdd");
+      database.ref('LastId').once('value', function(snapshot) {
+      id = snapshot.val().Attempts;
+      id = eval(id);
+      id = id + 1;
+      console.log(id);
+      database.ref("LastId").update({ Attempts:id,});
 
-      database.ref("Attempts/").push({
+      var levelIdAdd = document.getElementById("levelIdAdd").value;
+      var scoreAdd = document.getElementById("scoreAdd").value;
+      var timeAdd = document.getElementById("timeAdd").value;
+      var userIdAdd = document.getElementById("userIdAdd").value;
+
+      database.ref("Attempts/").child(id).set({
           levelId: levelIdAdd,
           score: scoreAdd,
           time: timeAdd,
           userId: userIdAdd
       });
-      document.getElementById("changesText").style.display = "block";
+
+      document.getElementById("changesTextAdd").style.display = "block";
       document.getElementById("levelIdAdd").value = "";
       document.getElementById("scoreAdd").value = "";
       document.getElementById("timeAdd").value = "";
       document.getElementById("userIdAdd").value = "";
+    });
   }
   function addAttempt(){
       document.getElementById("changesTextAdd").style.display = "none";

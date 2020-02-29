@@ -41,11 +41,8 @@
     </button>
   </div>
   <div class="modal-body">
-    <!--<h6>Question Statistics</h6>-->
-    <!--<p id ="levelStats"></p>-->
     <h6>Edit Level</h6>
     Level: <input id = "lvEdit" class="form-control" type="text" placeholder="Default input">
-    <!--Correct Ans: <input id = "correctEdit" class="form-control" type="text" placeholder="Default input">-->
     Boss: <input id = "bossEdit" class="form-control" type="text" placeholder="Default input">
     Question A: <input id = "qnAEdit" class="form-control" type="text" placeholder="Default input">
     Question B: <input id = "qnBEdit" class="form-control" type="text" placeholder="Default input">
@@ -85,8 +82,6 @@
     Question D: <input id = "qnDAdd" class="form-control" type="text" placeholder="Default input">
     Question E: <input id = "qnEAdd" class="form-control" type="text" placeholder="Default input">
     Custom Code: <input id = "codeAdd" class="form-control" type="text" placeholder="Default input">
-    <!--Correct Ans: <input id = "correctAdd" class="form-control" type="text" placeholder="Default input">-->
-    <!--Difficulty: <input id = "difficultyAdd" class="form-control" type="text" placeholder="Default input">-->
   </div>
   <div class="modal-footer">
     <h6 id = "changesTextAdd" style = "display:none; text-align: center; color: green;">Level Added!</h6>
@@ -129,6 +124,7 @@
       tr.setAttribute("data-toggle", "modal");
       tr.setAttribute("data-target", "#levelModal");
       tr.setAttribute("onClick", "setLevelModal(this.id)")
+
       var td1 = document.createElement("td");
       td1.innerHTML = lv.val().lv;
       var td2 = document.createElement("td");
@@ -145,6 +141,7 @@
       td7.innerHTML = lv.val().qnE;
       var td8 = document.createElement("td");
       td8.innerHTML = lv.val().code;
+
       tr.appendChild(td1);
       tr.appendChild(td2);
       tr.appendChild(td3);
@@ -153,39 +150,17 @@
       tr.appendChild(td6);
       tr.appendChild(td7);
       tr.appendChild(td8);
+
       tbody.appendChild(tr);
     })
   });
 
   function setLevelModal(id) {
-    document.getElementById("changesText").style.display = "none";
-    document.getElementById("removeLevelText").style.display = "none";
-    var content = document.getElementById("questionStats");
-    database.ref('Levels/' + id).once('value', function(snapshot) {
+      document.getElementById("changesText").style.display = "none";
+      document.getElementById("removeLevelText").style.display = "none";
+      var content = document.getElementById("levelStats");
+      database.ref('Levels/' + id).once('value', function(snapshot) {
       console.log(snapshot.val());
-      <!--var answers = [snapshot.val().A, snapshot.val().B, snapshot.val().C, snapshot.val().D];-->
-      <!--var totalAns = 0;-->
-      <!--for (var i = 0; i < answers.length; i++) {-->
-        <!--totalAns += answers[i];-->
-      <!--}-->
-      <!--var correctAns = (answers[snapshot.val().correct - 1] / totalAns) * 100;-->
-      <!--var a_percent = (snapshot.val().A / totalAns) * 100;-->
-      <!--var b_percent = (snapshot.val().B / totalAns) * 100;-->
-      <!--var c_percent = (snapshot.val().C / totalAns) * 100;-->
-      <!--var d_percent = (snapshot.val().D / totalAns) * 100;-->
-      <!--console.log(answers );-->
-
-      <!--var statsString = "";-->
-      <!--if (totalAns != 0) {-->
-        <!--statsString = correctAns.toString() + "% (" + answers[snapshot.val().correct - 1].toString() + "/" + totalAns.toString() + ") of the students have gotten this question correct<br>";-->
-        <!--statsString += a_percent.toString() + "% (" + snapshot.val().A.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().qnA + "'<br>";-->
-        <!--statsString += b_percent.toString() + "% (" + snapshot.val().B.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().qnB + "'<br>";-->
-        <!--statsString += c_percent.toString() + "% (" + snapshot.val().C.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().qnC + "'<br>";-->
-        <!--statsString += d_percent.toString() + "% (" + snapshot.val().D.toString() + "/" + totalAns.toString() + ") of the students answered '" + snapshot.val().qnD + "'<br>";-->
-      <!--} else {-->
-        <!--statsString = "No students have answered this question yet";-->
-      <!--}-->
-      <!--content.innerHTML = statsString;-->
 
       var lvEdit = document.getElementById("lvEdit");
       var bossEdit = document.getElementById("bossEdit");
@@ -210,42 +185,42 @@
   };
 
   function saveLevel(id) {
-    console.log(id);
-    var lvEdit = document.getElementById("lvEdit").value;
-    var bossEdit = document.getElementById("bossEdit").value;
-    var qnAEdit = document.getElementById("qnAEdit").value;
-    var qnBEdit = document.getElementById("qnBEdit").value;
-    var qnCEdit = document.getElementById("qnCEdit").value;
-    var qnDEdit = document.getElementById("qnDEdit").value;
-    var qnEEdit = document.getElementById("qnEEdit").value;
-    var codeEdit = document.getElementById("codeEdit").value;
+      console.log(id);
+      var lvEdit = document.getElementById("lvEdit").value;
+      var bossEdit = document.getElementById("bossEdit").value;
+      var qnAEdit = document.getElementById("qnAEdit").value;
+      var qnBEdit = document.getElementById("qnBEdit").value;
+      var qnCEdit = document.getElementById("qnCEdit").value;
+      var qnDEdit = document.getElementById("qnDEdit").value;
+      var qnEEdit = document.getElementById("qnEEdit").value;
+      var codeEdit = document.getElementById("codeEdit").value;
 
-    database.ref("Levels/").child(id).update({
-        lv: lvEdit,
-        boss: bossEdit,
-        qnA: qnAEdit,
-        qnB: qnBEdit,
-        qnC: qnCEdit,
-        qnD: qnDEdit,
-        qnE: qnEEdit,
-        code: codeEdit,
-      })
-      document.getElementById("changesText").style.display = "block";
+      database.ref("Levels/").child(id).update({
+          lv: lvEdit,
+          boss: bossEdit,
+          qnA: qnAEdit,
+          qnB: qnBEdit,
+          qnC: qnCEdit,
+          qnD: qnDEdit,
+          qnE: qnEEdit,
+          code: codeEdit,
+        })
+        document.getElementById("changesText").style.display = "block";
 
     };
 
     function deleteLevel(id){
-    database.ref("Levels/").child(id).remove();
-    document.getElementById("removeLevelText").style.display = "block";
-    document.getElementById("lvEdit").value = "";
-    document.getElementById("bossEdit").value = "";
-    document.getElementById("qnAEdit").value = "";
-    document.getElementById("qnBEdit").value = "";
-    document.getElementById("qnCEdit").value = "";
-    document.getElementById("qnDEdit").value = "";
-    document.getElementById("qnEEdit").value = "";
-    document.getElementById("codeEdit").value = "";
-};
+        database.ref("Levels/").child(id).remove();
+        document.getElementById("removeLevelText").style.display = "block";
+        document.getElementById("lvEdit").value = "";
+        document.getElementById("bossEdit").value = "";
+        document.getElementById("qnAEdit").value = "";
+        document.getElementById("qnBEdit").value = "";
+        document.getElementById("qnCEdit").value = "";
+        document.getElementById("qnDEdit").value = "";
+        document.getElementById("qnEEdit").value = "";
+        document.getElementById("codeEdit").value = "";
+  };
 
 function saveNewLevel(id) {
       database.ref('LastId').once('value', function(snapshot) {
@@ -254,7 +229,7 @@ function saveNewLevel(id) {
       id = id + 1;
       console.log(id);
       database.ref("LastId").update({ Levels:id,})
-      <!--console.log(id);-->
+
       var lvAdd = document.getElementById("lvAdd").value;
       var bossAdd = document.getElementById("bossAdd").value;
       var qnAAdd = document.getElementById("qnAAdd").value;
@@ -287,8 +262,6 @@ function saveNewLevel(id) {
         })
     };
 
-
-
     function addLevel(){
         document.getElementById("changesTextAdd").style.display = "none";
         var lvAdd = document.getElementById("lvAdd");
@@ -299,9 +272,6 @@ function saveNewLevel(id) {
         var qnDAdd = document.getElementById("qnDAdd");
         var qnEAdd = document.getElementById("qnEAdd");
         var codeAdd = document.getElementById("codeAdd");
-
-        <!--document.getElementById("saveButton2").setAttribute("value", new_id);-->
-
     };
 
 </script>
