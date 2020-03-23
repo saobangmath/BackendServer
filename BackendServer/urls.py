@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import include, path
 from . import views
 
+handler404 = views.handler404
+
 urlpatterns = [
     path('', views.home, name='home'),
     url('index/', views.home, name='home'),
