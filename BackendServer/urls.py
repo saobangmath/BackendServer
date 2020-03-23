@@ -26,11 +26,11 @@ urlpatterns = [
     url('register/', views.register, name='register'),
     url('checkprogress/', views.checkprogress, name='checkprogress'),
     url(r'^admin/', admin.site.urls),
-    path('questions/', include('questions.urls')),
-    path('levels/', include('levels.urls')),
-    path('attempts/', include('attempts.urls')),
-    path('worlds/', include('worlds.urls')),
-    path('users/', include('users.urls')),
+    path('questions/', include('questions.urls'), name='questions'),
+    path('levels/', include('levels.urls'), name='levels'),
+    path('attempts/', include('attempts.urls'), name='attempts'),
+    path('worlds/', include('worlds.urls'), name='worlds'),
+    path('users/', include('users.urls'), name='users'),
 ]
 
 # path('', include('home.urls')),
