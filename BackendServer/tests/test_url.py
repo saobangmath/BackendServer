@@ -1,6 +1,44 @@
 from django.urls import resolve, reverse
 from django.test import TestCase
 from django.urls.exceptions import NoReverseMatch
+from django.contrib.auth.models import User
+from django.contrib.auth import SESSION_KEY
+
+
+class LogInTest(TestCase):
+    def setUp(self):
+        self.credentials = {
+            'username': 'newuser',
+            'password': 'newpassword'}
+        User.objects.create_user(**self.credentials)
+
+
+    def test_login_newuser(self):
+        # login
+        print('\ntesting login newuser')
+        response = self.client.post('/login/', {'username':'newuser', 'password':'newpassword'}, follow=True)
+        # print('response',response.context['user'])
+        # should be logged in now, fails however
+        assert response.context['user'].is_authenticated   # account just created, assert True
+
+
+    def test_login_wrongpassword(self):
+        # login
+        print('\ntesting login wrongpassword')
+        response = self.client.post('/login/', {'username':'newuser', 'password':'oldpassword'}, follow=True)
+        # print('response',response.context['user'])
+        # should be logged in now, fails however
+        assert not response.context['user'].is_authenticated   # account just created, assert True
+
+
+    def test_login_fake(self):
+        # login
+        print('\ntesting login fake')
+        response = self.client.post('/login/', {'username':'fake', 'password':'fake'}, follow=True)
+        # print('response fake',response)
+        # should be logged in now, fails however
+        assert not response.context['user'].is_authenticated   # account does not exist, assert not
+
 
 class TestUrls(TestCase):
 
