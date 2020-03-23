@@ -4,6 +4,10 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 # Create your views here.
+
+def handler404(request, exception):
+    return render(request, '404.html', status=404)
+
 def register(request):
     request.PATH_INFO = '/register/'
     if request.method == 'POST':
