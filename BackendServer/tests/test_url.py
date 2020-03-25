@@ -28,7 +28,7 @@ class LogInTest(TestCase):
         response = self.client.post('/login/', {'username':'newuser', 'password':'oldpassword'}, follow=True)
         # print('response',response.context['user'])
         # should be logged in now, fails however
-        assert not response.context['user'].is_authenticated   # account just created, assert True
+        assert response.context['user'].is_authenticated   # account just created, assert True
 
 
     def test_login_fake(self):
@@ -47,6 +47,22 @@ class TestUrls(TestCase):
         assert resolve(path).view_name == 'login'
         print('\ntesting login')
 
+    def test_fake_url(self):
+        print('\ntesting fake')
+        try:
+            path = reverse('fake', kwargs={})   # url does not exist
+
+        except NoReverseMatch:
+            print('caught no reverse match')
+            assert True
+        except:
+            print('test fake fail')
+            assert False
+
+    def test_levels_url(self):
+        path = reverse('levels', kwargs={})
+        assert not resolve(path).view_name == 'level'   # typo on purpose, should not match, asserting not
+        print('\ntesting levels')
 
     def test_logout_url(self):
         path = reverse('logout', kwargs={})
@@ -71,22 +87,7 @@ class TestUrls(TestCase):
         assert resolve(path).view_name == 'questions'
         print('\ntesting questions')
 
-    def test_fake_url(self):
-        print('\ntesting fake')
-        try:
-            path = reverse('fake', kwargs={})   # url does not exist
-            resolve(path).view_name == 'fake'
-        except NoReverseMatch:
-            print('caught no reverse match')
-            assert True
-        except:
-            print('test fake fail')
-            assert False
 
-    def test_levels_url(self):
-        path = reverse('levels', kwargs={})
-        assert not resolve(path).view_name == 'level'   # typo on purpose, should not match, asserting not
-        print('\ntesting levels')
 
 
 
