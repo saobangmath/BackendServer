@@ -108,7 +108,7 @@
     tbody.innerHTML = "";
     document.getElementById("child_count").innerHTML = "0";
     snapshot.forEach(function(attempt) {
-      var cur = document.getElementById("child_count").innerHTML = "0";
+      var cur = document.getElementById("child_count").innerHTML;
       document.getElementById("child_count").innerHTML = parseInt(cur) + 1;
       var tr = document.createElement("tr");
       tr.setAttribute("class", "dataRow");
