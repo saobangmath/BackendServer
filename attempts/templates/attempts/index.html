@@ -9,6 +9,7 @@
   <table class="table">
     <thead class="thead-light" style = "border-radius: 10px;">
       <tr>
+        <th scope="col">WorldId</th>
         <th scope="col">LevelId</th>
         <th scope="col">Score</th>
         <th scope="col">Time</th>
@@ -40,7 +41,7 @@
     <h6>Attempt Statistics</h6>
     <p id ="attemptStats"></p>
     <h6>Edit Attempt</h6>
-    <!--AttemptId: <input id = "attemptIdEdit" class="form-control" type="text" placeholder="Default input">-->
+    WorldId: <input id = "worldIdEdit" class="form-control" type="text" placeholder="Default input">
     LevelId: <input id = "levelIdEdit" class="form-control" type="text" placeholder="Default input">
     Score: <input id = "scoreEdit" class="form-control" type="text" placeholder="Default input">
     Time: <input id = "timeEdit" class="form-control" type="text" placeholder="Default input">
@@ -69,7 +70,7 @@
   </div>
   <div class="modal-body">
     <h6>Add Attempt</h6>
-    <!--AttemptId: <input id = "attemptIdAdd" class="form-control" type="text" placeholder="Default input">-->
+    WorldId: <input id = "worldIdAdd" class="form-control" type="text" placeholder="Default input">
     LevelId: <input id = "levelIdAdd" class="form-control" type="text" placeholder="Default input">
     Score: <input id = "scoreAdd" class="form-control" type="text" placeholder="Default input">
     Time: <input id = "timeAdd" class="form-control" type="text" placeholder="Default input">
@@ -105,10 +106,10 @@
   // Initialise table
   database.ref('Attempts').on('value', function(snapshot) {
     tbody.innerHTML = "";
+    document.getElementById("child_count").innerHTML = "0";
     snapshot.forEach(function(attempt) {
       var cur = document.getElementById("child_count").innerHTML = "0";
       document.getElementById("child_count").innerHTML = parseInt(cur) + 1;
-
       var tr = document.createElement("tr");
       tr.setAttribute("class", "dataRow");
       tr.setAttribute("id", attempt.key);
@@ -117,18 +118,21 @@
       tr.setAttribute("onClick", "setAttemptModal(this.id)")
 
       var td1 = document.createElement("td");
-      td1.innerHTML = attempt.val().levelId;
+      td1.innerHTML = attempt.val().worldId;
       var td2 = document.createElement("td");
-      td2.innerHTML = attempt.val().score;
+      td2.innerHTML = attempt.val().levelId;
       var td3 = document.createElement("td");
-      td3.innerHTML = attempt.val().time;
+      td3.innerHTML = attempt.val().score;
       var td4 = document.createElement("td");
-      td4.innerHTML = attempt.val().userId;
+      td4.innerHTML = attempt.val().time;
+      var td5 = document.createElement("td");
+      td5.innerHTML = attempt.val().userId;
 
       tr.appendChild(td1);
       tr.appendChild(td2);
       tr.appendChild(td3);
       tr.appendChild(td4);
+      tr.appendChild(td5);
 
       tbody.appendChild(tr);
     })
@@ -141,12 +145,15 @@
       database.ref('Attempts/' + id).once('value', function(snapshot) {
       console.log(snapshot.val());
 
+      var worldIdEdit = document.getElementById("worldIdEdit");
       var levelIdEdit = document.getElementById("levelIdEdit");
       var scoreEdit = document.getElementById("scoreEdit");
       var timeEdit = document.getElementById("timeEdit");
       var userIdEdit = document.getElementById("userIdEdit");
 
       document.getElementById("changesTextAdd").style.display = "block";
+
+      worldIdEdit.value = snapshot.val().worldId
       levelIdEdit.value = snapshot.val().levelId;
       scoreEdit.value = snapshot.val().score;
       timeEdit.value = snapshot.val().time;
@@ -159,6 +166,7 @@
    function deleteAttempt(id){
       database.ref("Attempts/").child(id).remove();
       document.getElementById("removeAttemptText").style.display = "block";
+      document.getElementById("worldIdEdit").value = "";
       document.getElementById("levelIdEdit").value = "";
       document.getElementById("scoreEdit").value = "";
       document.getElementById("timeEdit").value = "";
@@ -167,12 +175,14 @@
 
   function saveAttempt(id) {
     console.log(id);
+    var worldIdEdit = document.getElementById("worldIdEdit").value;
     var levelIdEdit = document.getElementById("levelIdEdit").value;
     var scoreEdit = document.getElementById("scoreEdit").value;
     var timeEdit = document.getElementById("timeEdit").value;
     var userIdEdit = document.getElementById("userIdEdit").value;
 
     database.ref("Attempts/").child(id).update({
+        worldId: worldIdEdit,
         levelId: levelIdEdit,
         score: scoreEdit,
         time: timeEdit,
@@ -189,12 +199,14 @@
       console.log(id);
       database.ref("LastId").update({ Attempts:id,});
 
+      var worldIdAdd = document.getElementById("worldIdAdd").value;
       var levelIdAdd = document.getElementById("levelIdAdd").value;
       var scoreAdd = document.getElementById("scoreAdd").value;
       var timeAdd = document.getElementById("timeAdd").value;
       var userIdAdd = document.getElementById("userIdAdd").value;
 
       database.ref("Attempts/").child(id).set({
+          worldId: worldIdAdd,
           levelId: levelIdAdd,
           score: scoreAdd,
           time: timeAdd,
@@ -202,6 +214,7 @@
       });
 
       document.getElementById("changesTextAdd").style.display = "block";
+      document.getElementById("worldIdAdd").value = "";
       document.getElementById("levelIdAdd").value = "";
       document.getElementById("scoreAdd").value = "";
       document.getElementById("timeAdd").value = "";
@@ -210,6 +223,7 @@
   }
   function addAttempt(){
       document.getElementById("changesTextAdd").style.display = "none";
+      var worldIdAdd = document.getElementById("worldIdAdd");
       var levelIdAdd = document.getElementById("levelIdAdd");
       var scoreAdd = document.getElementById("scoreAdd");
       var timeAdd = document.getElementById("timeAdd");
