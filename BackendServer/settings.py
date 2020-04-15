@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'Leaderboard.apps.LeaderboardConfig',
     'attempts.apps.AttemptsConfig',
     'questions.apps.QuestionsConfig',
     'levels.apps.LevelsConfig',

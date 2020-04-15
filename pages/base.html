@@ -43,6 +43,7 @@
 			          <li><a href="{% url 'home' %}">Home</a></li>
 					  {% if user.is_authenticated %}
 							<li><a href="{% url 'checkprogress' %}">Check Progress</a></li>
+							<li><a href="{% url 'leaderboard' %}">Check Leaderboards</a></li>
 							<!--<li><a href="{% url 'questions' %}">Questions</a></li>-->
 							<li class="menu-has-children"><a href="">Edit Data</a>
 								<ul>

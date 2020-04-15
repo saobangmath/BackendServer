@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<br>
+<section class="home-about-area section-gap">
+<div class = "container">
+  <h2>Leaderboard</h2> <br>
+  <h4>Select the level</h4>
+  <select class="form-control" id = "levels" onchange="populateLeaderboard(this)">
+  </select>
+  <table class="table">
+    <thead class="thead-light" style = "border-radius: 10px;">
+      <tr>
+        <th scope="col">Rank</th>
+        <th scope="col">Score</th>
+        <th scope="col">Name</th>
+      </tr>
+    </thead>
+    <tbody id = "leaderboard_content">
+
+    </tbody>
+  </table>
+</div>
+</section>
+
+{% endblock %}
+
+{% block script %}
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCbrmnFV_4UBbmFyJIhqIM_J5QDbpGkgRo",
+    authDomain: "marvellous-kittens.firebaseapp.com",
+    databaseURL: "https://marvellous-kittens.firebaseio.com",
+    projectId: "marvellous-kittens",
+    storageBucket: "marvellous-kittens.appspot.com",
+    messagingSenderId: "942471948637",
+    appId: "1:942471948637:web:29eec0236cd1e64d18e0b4"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+
+  // Initialise options
+  var select = document.getElementById("levels");
+  database.ref('Levels').once('value', function(snapshot) {
+    snapshot.forEach(function(lv) {
+      var option = document.createElement("option");
+      option.text = lv.val().lv;
+      option.value = lv.val().code;
+      select.appendChild(option);
+    })
+  });
+
+function populateLeaderboard(sel) {
+    var option = sel.options[sel.selectedIndex];
+    var attemptList = []
+    var query = database.ref('Attempts/')
+    
+    query.once('value').then(async function(snapshot) {
+      if (option.text.includes("World")) {
+        var split = option.text.split(" ");
+        var worldId = split[1];
+        var levelId = split[3];
+        snapshot.forEach(function(a) {
+          console.log(a.val().score);
+          if (a.val().levelId == levelId && a.val().worldId == worldId) {
+            attemptList.push(a);
+          }
+        })
+      } else {
+        snapshot.forEach(function(a) {
+          if (a.val().levelId == option.value) {
+            attemptList.push(a);
+          }
+        })
+      }
+      attemptList.sort((first, second) => (parseInt(first.val().score) < parseInt(second.val().score)) ? 1 : -1)
+      var tbody = document.getElementById("leaderboard_content");
+      tbody.innerHTML = "";
+      for (var i = 0; i < attemptList.length && i < 10; i++) {
+        var tr = document.createElement("tr");
+        tr.id = attemptList[i].val().userId;
+        var td_rank = (i + 1).toString();
+        var td_score = attemptList[i].val().score;
+        var td_name = "";
+        var td1 = document.createElement("td");
+        td1.innerHTML = td_rank;
+        var td2 = document.createElement("td");
+        td2.innerHTML = td_score;
+        var td3 = document.createElement("td");
+        td3.innerHTML = "";
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        var userSnap = await database.ref('Users/' + attemptList[i].val().userId).once('value');
+        td3.innerHTML = userSnap.val().usr;
+        tr.appendChild(td3);
+        tbody.appendChild(tr);
+      }
+    })
+
+  }
+
+  function setLevelModal(id) {
+      document.getElementById("changesText").style.display = "none";
+      document.getElementById("removeLevelText").style.display = "none";
+      var content = document.getElementById("levelStats");
+      database.ref('Levels/' + id).once('value', function(snapshot) {
+      console.log(snapshot.val());
+
+      var lvEdit = document.getElementById("lvEdit");
+      var bossEdit = document.getElementById("bossEdit");
+      var qnAEdit = document.getElementById("qnAEdit");
+      var qnBEdit = document.getElementById("qnBEdit");
+      var qnCEdit = document.getElementById("qnCEdit");
+      var qnDEdit = document.getElementById("qnDEdit");
+      var qnEEdit = document.getElementById("qnEEdit");
+      var codeEdit = document.getElementById("codeEdit");
+
+      lvEdit.value = snapshot.val().lv;
+      bossEdit.value = snapshot.val().boss;
+      qnAEdit.value = snapshot.val().qnA;
+      qnBEdit.value = snapshot.val().qnB;
+      qnCEdit.value = snapshot.val().qnC;
+      qnDEdit.value = snapshot.val().qnD;
+      qnEEdit.value = snapshot.val().qnE;
+      codeEdit.value = snapshot.val().code;
+      document.getElementById("deleteButton").setAttribute("value", id);
+      document.getElementById("saveButton").setAttribute("value", id);
+    })
+  };
+
+  function saveLevel(id) {
+      console.log(id);
+      var lvEdit = document.getElementById("lvEdit").value;
+      var bossEdit = document.getElementById("bossEdit").value;
+      var qnAEdit = document.getElementById("qnAEdit").value;
+      var qnBEdit = document.getElementById("qnBEdit").value;
+      var qnCEdit = document.getElementById("qnCEdit").value;
+      var qnDEdit = document.getElementById("qnDEdit").value;
+      var qnEEdit = document.getElementById("qnEEdit").value;
+      var codeEdit = document.getElementById("codeEdit").value;
+
+      database.ref("Levels/").child(id).update({
+          lv: lvEdit,
+          boss: bossEdit,
+          qnA: qnAEdit,
+          qnB: qnBEdit,
+          qnC: qnCEdit,
+          qnD: qnDEdit,
+          qnE: qnEEdit,
+          code: codeEdit,
+        })
+        document.getElementById("changesText").style.display = "block";
+
+    };
+
+    function deleteLevel(id){
+        database.ref("Levels/").child(id).remove();
+        document.getElementById("removeLevelText").style.display = "block";
+        document.getElementById("lvEdit").value = "";
+        document.getElementById("bossEdit").value = "";
+        document.getElementById("qnAEdit").value = "";
+        document.getElementById("qnBEdit").value = "";
+        document.getElementById("qnCEdit").value = "";
+        document.getElementById("qnDEdit").value = "";
+        document.getElementById("qnEEdit").value = "";
+        document.getElementById("codeEdit").value = "";
+  };
+
+function saveNewLevel(id) {
+      database.ref('LastId').once('value', function(snapshot) {
+      id = snapshot.val().Levels;
+      id = eval(id);
+      id = id + 1;
+      console.log(id);
+      database.ref("LastId").update({ Levels:id,})
+
+      var lvAdd = document.getElementById("lvAdd").value;
+      var bossAdd = document.getElementById("bossAdd").value;
+      var qnAAdd = document.getElementById("qnAAdd").value;
+      var qnBAdd = document.getElementById("qnBAdd").value;
+      var qnCAdd = document.getElementById("qnCAdd").value;
+      var qnDAdd = document.getElementById("qnDAdd").value;
+      var qnEAdd = document.getElementById("qnEAdd").value;
+      var codeAdd = document.getElementById("codeAdd").value;
+
+      database.ref("Levels/").child(id).set({
+          lv: lvAdd,
+          boss: bossAdd,
+          qnA: qnAAdd,
+          qnB: qnBAdd,
+          qnC: qnCAdd,
+          qnD: qnDAdd,
+          qnE: qnEAdd,
+          code: codeAdd,
+        });
+
+        document.getElementById("changesTextAdd").style.display = "block";
+        document.getElementById("lvAdd").value = "";
+        document.getElementById("bossAdd").value = "";
+        document.getElementById("qnAAdd").value = "";
+        document.getElementById("qnBAdd").value = "";
+        document.getElementById("qnCAdd").value = "";
+        document.getElementById("qnDAdd").value = "";
+        document.getElementById("qnEAdd").value = "";
+        document.getElementById("codeAdd").value = "";
+        })
+    };
+
+    function addLevel(){
+        document.getElementById("changesTextAdd").style.display = "none";
+        var lvAdd = document.getElementById("lvAdd");
+        var bossAdd = document.getElementById("bossAdd");
+        var qnAAdd = document.getElementById("qnAAdd");
+        var qnBAdd = document.getElementById("qnBAdd");
+        var qnCAdd = document.getElementById("qnCAdd");
+        var qnDAdd = document.getElementById("qnDAdd");
+        var qnEAdd = document.getElementById("qnEAdd");
+        var codeAdd = document.getElementById("codeAdd");
+    };
+
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+  .dataRow:hover {
+    background-color:#dddddd;
+  }
+  .table {
+    border-radius: 20px;
+  }
+</style>
+{% endblock %}
