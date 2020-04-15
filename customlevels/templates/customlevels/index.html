@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<br>
+<section class="home-about-area section-gap">
+<div class = "container" style = "width: 60%">
+  <h2>Custom Levels</h2> <br>
+  <p>Create a custom level for your students</p>
+  <h6>Boss: </h6>
+  <img id = "bossImage" src="{% static 'img/chicken.gif' %}" width="32">
+  <select id = "bossEdit" class="form-control" onchange = "changeBoss(this)">
+    <option value = "hi">chicken</option>
+    <option>turtle</option>
+    <option>rhino</option>
+  </select>
+  <datalist id = "questions">
+
+  </datalist>
+  Question A: 
+  <input id = "qnAEdit" class = "form-control" list = "questions" placeholder="Search or select your question from the dropdown">
+  Question B: <input id = "qnBEdit" class = "form-control" list = "questions" placeholder="Search or select your question from the dropdown">
+  Question C: <input id = "qnCEdit" class = "form-control" list = "questions" placeholder="Search or select your question from the dropdown">
+  Question D: <input id = "qnDEdit" class = "form-control" list = "questions" placeholder="Search or select your question from the dropdown">
+  Question E: <input id = "qnEEdit" class = "form-control" list = "questions" placeholder="Search or select your question from the dropdown">
+  Custom Code: <input id = "codeEdit" class="form-control" type="text" placeholder="Enter an alphanumeric code of length 6 for your students to enter the game">
+  <br>
+  <button id = "saveButton" value = "" type="button" class="btn btn-primary" onclick = "saveCustomLevel()">Create Custom Level</button>
+  <h6 id = "errorText" style = "display:none; color: rgb(161, 0, 0);">Error!</h6>
+  <h6 id = "changesText" style = "display:none; color: green;">Level created!</h6>
+</div>
+</section>
+
+{% endblock %}
+
+{% block script %}
+
+
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCbrmnFV_4UBbmFyJIhqIM_J5QDbpGkgRo",
+    authDomain: "marvellous-kittens.firebaseapp.com",
+    databaseURL: "https://marvellous-kittens.firebaseio.com",
+    projectId: "marvellous-kittens",
+    storageBucket: "marvellous-kittens.appspot.com",
+    messagingSenderId: "942471948637",
+    appId: "1:942471948637:web:29eec0236cd1e64d18e0b4"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+   // Initialise question list
+  
+  var validQuestions = [];
+  var questions = document.getElementById("questions");
+  database.ref('Questions').once('value', function(snapshot) {
+    snapshot.forEach(function(qn) {
+      var option = document.createElement("option");
+      option.value = qn.key;
+      option.text = qn.val().qn;
+      questions.appendChild(option);
+      validQuestions.push(qn.key);
+    })
+  }); 
+  console.log(validQuestions);
+  
+  function changeBoss(sel) {
+    var option = sel.options[sel.selectedIndex];
+    var image = document.getElementById("bossImage");
+    switch(option.text) {
+      case("chicken") : 
+        image.width = "32";
+        image.src = "{% static 'img/chicken.gif' %}";
+        break;
+      case("turtle") : 
+        image.width = "44";
+        image.src = "{% static 'img/turtle.gif' %}";
+        break;
+      case("rhino") : 
+        image.width = "52";
+        image.src = "{% static 'img/rhino.gif' %}";
+        break;
+  }
+  }
+
+  function checkQn(input) {
+    if (input == "") {
+      document.getElementById("errorText").style.display = "block";
+      document.getElementById("changesText").style.display = "none";
+      document.getElementById("errorText").innerHTML = "Please fill in all fields"
+      return false;
+    }
+    if (!validQuestions.includes(input)) {
+      document.getElementById("errorText").style.display = "block";
+      document.getElementById("changesText").style.display = "none";
+      document.getElementById("errorText").innerHTML = "You have entered invalid question IDs"
+      return false;
+    }
+    return true;
+  }
+
+  
+  async function saveCustomLevel() {
+      var bossOption = document.getElementById("bossEdit");
+      var bossEdit = bossOption.options[bossOption.selectedIndex].text;
+      var qnAEdit = document.getElementById("qnAEdit").value;
+      var qnBEdit = document.getElementById("qnBEdit").value;
+      var qnCEdit = document.getElementById("qnCEdit").value;
+      var qnDEdit = document.getElementById("qnDEdit").value;
+      var qnEEdit = document.getElementById("qnEEdit").value;
+      var codeEdit = document.getElementById("codeEdit").value;
+
+      if (!(checkQn(qnAEdit) && checkQn(qnBEdit) && checkQn(qnCEdit) && checkQn(qnDEdit) && checkQn(qnEEdit))) {
+        return;
+      }
+
+      if (codeEdit.length != 6) {
+        document.getElementById("errorText").style.display = "block";
+        document.getElementById("changesText").style.display = "none";
+        document.getElementById("errorText").innerHTML = "Please enter a Custom Code of length 6";
+        return;
+      }
+
+      var snapshots = await database.ref("Levels/").once("value");
+      console.log(snapshots.val())
+
+      for (var snap in snapshots.val()) {
+        if (snapshots.val()[snap].code == codeEdit) {
+          document.getElementById("errorText").style.display = "block";
+          document.getElementById("changesText").style.display = "none";
+          document.getElementById("errorText").innerHTML = "Your Custom Code is already used. Please use a different code."
+          return;
+        }
+      }
+
+      database.ref("Levels/").push({
+        lv: codeEdit,
+        boss: bossEdit,
+        qnA: qnAEdit,
+        qnB: qnBEdit,
+        qnC: qnCEdit,
+        qnD: qnDEdit,
+        qnE: qnEEdit,
+        code: codeEdit,
+      });
+
+      document.getElementById("errorText").style.display = "none";
+      document.getElementById("changesText").style.display = "block";
+      document.getElementById("changesText").innerHTML = "Your Custom Level is saved! Send your Custom Code to your students!"
+
+      /* database.ref("Levels/").child(id).update({
+          lv: lvEdit,
+          boss: bossEdit,
+          qnA: qnAEdit,
+          qnB: qnBEdit,
+          qnC: qnCEdit,
+          qnD: qnDEdit,
+          qnE: qnEEdit,
+          code: codeEdit,
+        })
+        document.getElementById("changesText").style.display = "block"; */
+
+    };
+
+ 
+
+</script>
+{% endblock %}
+
+{% block style %}
+<style>
+  .dataRow:hover {
+    background-color:#dddddd;
+  }
+  .table {
+    border-radius: 20px;
+  }
+</style>
+{% endblock %}

@@ -5,9 +5,12 @@
 <section class="home-about-area section-gap">
 <div class = "container">
   <h2>Leaderboard</h2> <br>
+  <p>Check out how your students are doing</p>
   <h4>Select the level</h4>
   <select class="form-control" id = "levels" onchange="populateLeaderboard(this)">
+    <option disabled selected value> -- select an option -- </option>
   </select>
+  <br>
   <table class="table">
     <thead class="thead-light" style = "border-radius: 10px;">
       <tr>
@@ -20,12 +23,16 @@
 
     </tbody>
   </table>
+  <p id = "infoText"  style = "display:block;">No level selected</p>
 </div>
 </section>
 
 {% endblock %}
 
 {% block script %}
+
+
+
 <script>
   // Your web app's Firebase configuration
   var firebaseConfig = {
@@ -75,6 +82,11 @@ function populateLeaderboard(sel) {
           }
         })
       }
+
+      if (attemptList.length == 0) {
+        document.getElementById("infoText").innerHTML = "There are no attempts for this level";
+      }
+
       attemptList.sort((first, second) => (parseInt(first.val().score) < parseInt(second.val().score)) ? 1 : -1)
       var tbody = document.getElementById("leaderboard_content");
       tbody.innerHTML = "";
@@ -99,126 +111,11 @@ function populateLeaderboard(sel) {
       }
     })
 
+    document.getElementById("infoText").innerHTML = "End of Leaderboard List";
+
   }
 
-  function setLevelModal(id) {
-      document.getElementById("changesText").style.display = "none";
-      document.getElementById("removeLevelText").style.display = "none";
-      var content = document.getElementById("levelStats");
-      database.ref('Levels/' + id).once('value', function(snapshot) {
-      console.log(snapshot.val());
-
-      var lvEdit = document.getElementById("lvEdit");
-      var bossEdit = document.getElementById("bossEdit");
-      var qnAEdit = document.getElementById("qnAEdit");
-      var qnBEdit = document.getElementById("qnBEdit");
-      var qnCEdit = document.getElementById("qnCEdit");
-      var qnDEdit = document.getElementById("qnDEdit");
-      var qnEEdit = document.getElementById("qnEEdit");
-      var codeEdit = document.getElementById("codeEdit");
-
-      lvEdit.value = snapshot.val().lv;
-      bossEdit.value = snapshot.val().boss;
-      qnAEdit.value = snapshot.val().qnA;
-      qnBEdit.value = snapshot.val().qnB;
-      qnCEdit.value = snapshot.val().qnC;
-      qnDEdit.value = snapshot.val().qnD;
-      qnEEdit.value = snapshot.val().qnE;
-      codeEdit.value = snapshot.val().code;
-      document.getElementById("deleteButton").setAttribute("value", id);
-      document.getElementById("saveButton").setAttribute("value", id);
-    })
-  };
-
-  function saveLevel(id) {
-      console.log(id);
-      var lvEdit = document.getElementById("lvEdit").value;
-      var bossEdit = document.getElementById("bossEdit").value;
-      var qnAEdit = document.getElementById("qnAEdit").value;
-      var qnBEdit = document.getElementById("qnBEdit").value;
-      var qnCEdit = document.getElementById("qnCEdit").value;
-      var qnDEdit = document.getElementById("qnDEdit").value;
-      var qnEEdit = document.getElementById("qnEEdit").value;
-      var codeEdit = document.getElementById("codeEdit").value;
-
-      database.ref("Levels/").child(id).update({
-          lv: lvEdit,
-          boss: bossEdit,
-          qnA: qnAEdit,
-          qnB: qnBEdit,
-          qnC: qnCEdit,
-          qnD: qnDEdit,
-          qnE: qnEEdit,
-          code: codeEdit,
-        })
-        document.getElementById("changesText").style.display = "block";
-
-    };
-
-    function deleteLevel(id){
-        database.ref("Levels/").child(id).remove();
-        document.getElementById("removeLevelText").style.display = "block";
-        document.getElementById("lvEdit").value = "";
-        document.getElementById("bossEdit").value = "";
-        document.getElementById("qnAEdit").value = "";
-        document.getElementById("qnBEdit").value = "";
-        document.getElementById("qnCEdit").value = "";
-        document.getElementById("qnDEdit").value = "";
-        document.getElementById("qnEEdit").value = "";
-        document.getElementById("codeEdit").value = "";
-  };
-
-function saveNewLevel(id) {
-      database.ref('LastId').once('value', function(snapshot) {
-      id = snapshot.val().Levels;
-      id = eval(id);
-      id = id + 1;
-      console.log(id);
-      database.ref("LastId").update({ Levels:id,})
-
-      var lvAdd = document.getElementById("lvAdd").value;
-      var bossAdd = document.getElementById("bossAdd").value;
-      var qnAAdd = document.getElementById("qnAAdd").value;
-      var qnBAdd = document.getElementById("qnBAdd").value;
-      var qnCAdd = document.getElementById("qnCAdd").value;
-      var qnDAdd = document.getElementById("qnDAdd").value;
-      var qnEAdd = document.getElementById("qnEAdd").value;
-      var codeAdd = document.getElementById("codeAdd").value;
-
-      database.ref("Levels/").child(id).set({
-          lv: lvAdd,
-          boss: bossAdd,
-          qnA: qnAAdd,
-          qnB: qnBAdd,
-          qnC: qnCAdd,
-          qnD: qnDAdd,
-          qnE: qnEAdd,
-          code: codeAdd,
-        });
-
-        document.getElementById("changesTextAdd").style.display = "block";
-        document.getElementById("lvAdd").value = "";
-        document.getElementById("bossAdd").value = "";
-        document.getElementById("qnAAdd").value = "";
-        document.getElementById("qnBAdd").value = "";
-        document.getElementById("qnCAdd").value = "";
-        document.getElementById("qnDAdd").value = "";
-        document.getElementById("qnEAdd").value = "";
-        document.getElementById("codeAdd").value = "";
-        })
-    };
-
-    function addLevel(){
-        document.getElementById("changesTextAdd").style.display = "none";
-        var lvAdd = document.getElementById("lvAdd");
-        var bossAdd = document.getElementById("bossAdd");
-        var qnAAdd = document.getElementById("qnAAdd");
-        var qnBAdd = document.getElementById("qnBAdd");
-        var qnCAdd = document.getElementById("qnCAdd");
-        var qnDAdd = document.getElementById("qnDAdd");
-        var qnEAdd = document.getElementById("qnEAdd");
-        var codeAdd = document.getElementById("codeAdd");
-    };
+ 
 
 </script>
 {% endblock %}

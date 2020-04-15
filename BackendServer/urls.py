@@ -36,7 +36,8 @@ urlpatterns = [
     path('attempts/', include('attempts.urls'), name='attempts'),
     path('worlds/', include('worlds.urls'), name='worlds'),
     path('users/', include('users.urls'), name='users'),
-    path('leaderboard/', include('Leaderboard.urls'), name='leaderboard')
+    path('leaderboard/', include('Leaderboard.urls'), name='leaderboard'),
+    path('customlevels/', include('customlevels.urls'), name='customlevels'),
 ]
 
 #     url(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
