@@ -39,6 +39,13 @@
   <div class="modal-body">
     <!--<h6>Question Statistics</h6>-->
     <!--<p id ="userStats"></p>-->
+    <h6><b>Student Progress</b></h6>
+    <p id = "latestLevel"></p>
+    <p id = "w1"></p>
+    <p id = "w2"></p>
+    <p id = "w3"></p>
+    <p id = "w4"></p>
+    <p id = "w5"></p>
     <h6>Edit User</h6>
     User: <input id = "usrEdit" class="form-control" type="text" placeholder="Default input">
     <!--Correct Ans: <input id = "correctEdit" class="form-control" type="text" placeholder="Default input">-->
@@ -138,7 +145,7 @@
     document.getElementById("changesText").style.display = "none";
     document.getElementById("removeUserText").style.display = "none";
     database.ref('Users/' + id).once('value', function(snapshot) {
-      console.log(snapshot.val());
+      //console.log(snapshot.val());
 
 
       var usrEdit = document.getElementById("usrEdit");
@@ -151,9 +158,67 @@
       chrEdit.value = snapshot.val().chr;
       document.getElementById("deleteButton").setAttribute("value", id);
       document.getElementById("saveButton").setAttribute("value", id);
+
+      var latest = snapshot.val().llv;
+      var latestWorld = Math.floor(parseInt(latest) / 6) + 1;
+      var latestLevel = parseInt(latest) % 6;
+      document.getElementById("latestLevel").innerHTML = "<u>Latest Progress: </u><br>World " + latestWorld.toString() + " Level " + latestLevel.toString();
+    })
+
+    database.ref('Attempts/').orderByChild("userId").equalTo(id).once('value', function(snapshot) {
+      var world1 = []
+      var world2 = []
+      var world3 = []
+      var world4 = []
+      var world5 = []
+
+      snapshot.forEach(function(a) {
+        switch(a.val().worldId) {
+          case("1"): world1.push(a.val()); break;
+          case("2"): world2.push(a.val()); break;
+          case("3"): world3.push(a.val()); break;
+          case("4"): world4.push(a.val()); break;
+          case("5"): world5.push(a.val()); break;
+          default: break;
+        }
+      });
+
+      checkProgress("1", world1);
+      checkProgress("2", world2);
+      checkProgress("3", world3);
+      checkProgress("4", world4);
+      checkProgress("5", world5);
     })
   };
 
+  function checkProgress(world, worldList) {
+    console.log(worldList);
+    var worlds = ["Planning", "Analysis & Design Implementation", "Testing & Integration", "Maintenance", "All"]
+    var titleWorld = "<u>" + worlds[parseInt(world) - 1] + ": </u><br>";
+    if (worldList.length < 1) {
+      document.getElementById("w" + world).innerHTML = titleWorld + "The student has not attempted this World.";
+      return;
+    }
+    var totalScore = 21 *  6 * worldList.length;
+    var achievedScore = 0;
+    for (var i = 0; i < worldList.length; i++) {
+      if (parseInt(worldList[i].score) > 30 * 6) {
+        continue;
+      }
+      achievedScore = achievedScore + parseInt(worldList[i].score);
+      console.log(achievedScore);
+    }
+
+    if (achievedScore/totalScore < 0.5) {
+      document.getElementById("w" + world).innerHTML = titleWorld + "This student seems to be struggling in this concept. Out of all attempts, he/she scored approximately " + parseFloat((achievedScore/totalScore * 100)).toFixed(2) + " %";
+    }
+    else if (achievedScore/totalScore >= 0.5 && achievedScore/totalScore <= 0.65) {
+      document.getElementById("w" + world).innerHTML = titleWorld + "This student has average proficiency in this concept. Out of all attempts, he/she scored approximately " + parseFloat((achievedScore/totalScore * 100)).toFixed(2) + " %";
+    }
+    else {
+      document.getElementById("w" + world).innerHTML = titleWorld + "This student seems to excel in this concept! Out of all attempts, he/she scored approximately " + parseFloat((achievedScore/totalScore * 100)).toFixed(2) + " %";
+    }
+  }
   function saveUser(id) {
     console.log(id);
     var usrEdit = document.getElementById("usrEdit").value;
@@ -236,5 +301,18 @@ function saveNewUser(id) {
   .table {
     border-radius: 20px;
   }
+
+  b {
+    color: black;
+  }
+
+  u {
+    color: black;
+  }
+
+  p {
+    color: black;
+  }
+
 </style>
 {% endblock %}
